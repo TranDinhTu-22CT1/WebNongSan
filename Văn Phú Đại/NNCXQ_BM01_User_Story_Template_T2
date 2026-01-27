@@ -1,0 +1,823 @@
+BIỂU MẪU USER STORY
+Đồ án Chuyên ngành CNPM - Trường ĐH Kiến trúc Đà Nẵng
+Nhóm:	 Những người con xứ Quảng	Ngày:	 27/01/2026
+1. CHỨC NĂNG CỦA NGƯỜI DÙNG – USER STORY
+THÔNG TIN USER STORY	 
+Story ID	US-001
+Title	Đăng ký tài khoản mới cho khách hàng
+Epic/Feature	Authentication (Quản lý tài khoản)
+
+USER STORY STATEMENT
+Là một khách hàng mới (Guest)
+Tôi muốn đăng ký tài khoản bằng email và mật khẩu|
+Để tôi có thể trở thành thành viên, lưu lại lịch sử mua hàng và nhận ưu đãi
+
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Khách hàng đang ở trang Đăng ký
+When: Khách hàng nhập đầy đủ thông tin hợp lệ và nhấn "Đăng ký"
+Then: Hệ thống tạo tài khoản thành công, hiển thị thông báo và chuyển hướng về trang Đăng nhập.
+AC2:
+Given: Khách hàng nhập email đã tồn tại trong hệ thống.
+When: Nhấn nút "Đăng ký".
+Then: Hệ thống báo lỗi "Email này đã được sử dụng" và không tạo tài khoản.
+AC3:
+Given: Khách hàng nhập mật khẩu xác nhận không khớp.
+When: Nhấn nút "Đăng ký".
+Then: Hệ thống báo lỗi "Mật khẩu nhập lại không khớp".
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 1	 
+ 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào hệ thống cơ sở dữ liệu người dùng.
+Email phải là duy nhất trong hệ thống.
+Mật khẩu cần được mã hóa trước khi lưu trữ.
+Là chức năng nền tảng cho các User Story liên quan đến đăng nhập và mua hàng.
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-002
+Title	Đăng nhập vào hệ thống
+Epic/Feature	Authentication (Quản lý tài khoản)
+ 
+USER STORY STATEMENT
+Là một thành viên đã đăng ký
+Tôi muốn đăng nhập bằng tài khoản của mình
+Để tôi có thể truy cập vào giỏ hàng cá nhân và tiến hành thanh toán
+
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dùng đang ở trang Đăng nhập.
+When: Nhập đúng Email, Mật khẩu và nhấn "Đăng nhập".
+Then: Hệ thống chuyển hướng về Trang chủ và hiển thị Avatar người dùng trên Header.
+AC2:
+Given: Người dùng nhập sai Email hoặc Mật khẩu.
+When: Nhấn nút "Đăng nhập".
+Then: Hệ thống hiển thị thông báo lỗi "Thông tin đăng nhập không chính xác".
+
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☑3  ☐5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 1	 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào User Story đăng ký tài khoản (US-001).
+Yêu cầu hệ thống xác thực thông tin người dùng.
+Cần quản lý phiên đăng nhập (session/token).
+Là điều kiện bắt buộc để sử dụng giỏ hàng và thanh toán.
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-003
+Title	Tìm kiếm sản phẩm theo từ khóa
+Epic/Feature	Home & Navigation (Trang chủ & Điều hướng)
+ 
+USER STORY STATEMENT
+Là một người mua hàng
+Tôi muốn tìm kiếm sản phẩm bằng cách gõ tên vào thanh tìm kiếm
+Để tôi có thể tìm thấy món hàng mình cần nhanh chóng mà không phải tìm thủ công.
+
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dùng đang ở trang chủ.
+When: Gõ từ khóa (ví dụ: "Táo") vào ô tìm kiếm và nhấn Enter.
+Then: Hệ thống chuyển sang trang danh sách hiển thị các sản phẩm có tên chứa chữ "Táo".
+AC2:
+Given: Người dùng tìm kiếm một từ khóa không có trong kho.
+When: Nhấn Enter.
+Then: Hệ thống hiển thị thông báo "Không tìm thấy sản phẩm nào phù hợp".
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 1	 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào dữ liệu sản phẩm đã được lưu trong hệ thống.
+Tốc độ tìm kiếm ảnh hưởng trực tiếp đến trải nghiệm người dùng.
+Có thể mở rộng thêm tìm kiếm theo danh mục hoặc giá sau này.
+
+THÔNG TIN USER STORY	 
+Story ID	US-004
+Title	Xem thông tin chi tiết sản phẩm
+Epic/Feature	Product Management (Quản lý sản phẩm)
+ 
+ 
+USER STORY STATEMENT
+Là một người mua hàng kỹ tính
+Tôi muốn xem trang chi tiết của một sản phẩm
+Để tôi biết rõ giá, nguồn gốc, mô tả trước khi quyết định mua.
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dùng đang xem danh sách sản phẩm ở trang chủ.
+When: Click vào hình ảnh hoặc tên của một sản phẩm bất kỳ.
+Then: Hệ thống chuyển hướng sang trang Chi tiết sản phẩm.
+AC2:
+Given: Đang ở trang chi tiết sản phẩm.
+When: Trang tải xong.
+Then: Hiển thị đầy đủ: Hình ảnh lớn, Tên, Giá, Mô tả chi tiết và nút "Thêm vào giỏ".
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☑3  ☐5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 1	 
+ 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào danh sách sản phẩm được hiển thị ở trang chủ.
+Thông tin sản phẩm do người bán cung cấp và admin duyệt.
+Là tiền đề cho User Story “Thêm vào giỏ hàng”.
+
+THÔNG TIN USER STORY	 
+Story ID	US-005
+Title	Thêm sản phẩm vào giỏ hàng
+Epic/Feature	Shopping Cart (Giỏ hàng)
+ 
+USER STORY STATEMENT
+Là một người mua hàng
+Tôi muốn thêm sản phẩm vào giỏ hàng của mình
+Để tôi có thể gom nhiều món hàng lại và thanh toán một lần.
+ 
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dùng đang ở trang chi tiết hoặc trang chủ.
+When: Nhấn nút "Thêm vào giỏ hàng".
+Then: Số lượng trên icon Giỏ hàng ở góc phải màn hình tăng lên 1 đơn vị ngay lập tức
+AC2:
+Given: Sản phẩm đã có sẵn trong giỏ hàng.
+When: Người dùng nhấn thêm lần nữa.
+Then: Hệ thống không tạo dòng mới mà tăng số lượng (Quantity) của sản phẩm đó trong giỏ lên.
+
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 2	 
+
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào User Story xem sản phẩm (US-004).
+Giỏ hàng có thể hoạt động với người dùng chưa đăng nhập (Guest).
+Cần lưu tạm giỏ hàng trong session hoặc local storage.
+
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-006
+Title	Xem và cập nhật giỏ hàng
+Epic/Feature	Shopping Cart (Giỏ hàng)
+
+USER STORY STATEMENT
+Là một người mua hàng
+Tôi muốn xem lại và chỉnh sửa giỏ hàng
+Để tôi có thể thay đổi số lượng hoặc xóa bớt món không cần thiết trước khi trả tiền.
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dùng đang ở trang Giỏ hàng
+When: Nhấn nút tăng/giảm số lượng (+) (-).
+Then: Tổng tiền (Total Price) của đơn hàng được tính toán lại ngay lập tức.
+AC2:
+Given: Người dùng muốn bỏ một sản phẩm.
+When: Nhấn nút "Xóa" (biểu tượng thùng rác).
+Then: Sản phẩm biến mất khỏi danh sách và tổng tiền được cập nhật.
+ 
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☐5 ☑ 8 ☐13	☑Must ☐Should ☐Could	Sprint 2	 
+
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào User Story thêm sản phẩm vào giỏ hàng (US-005).
+Tổng tiền phải được tính lại tự động sau mỗi thao tác.
+Cần kiểm tra số lượng tồn kho trước khi thanh toán.
+
+THÔNG TIN USER STORY	 
+Story ID	US-007
+Title	Đặt hàng và thanh toán
+Epic/Feature	Checkout (Thanh toán)
+
+USER STORY STATEMENT
+Là một người mua hàng
+Tôi muốn điền thông tin giao hàng và xác nhận đặt hàng
+Để tôi hoàn tất quá trình mua sắm và chờ nhận hàng.
+
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Giỏ hàng có sản phẩm và người dùng nhấn "Thanh toán".
+When: Người dùng điền đầy đủ: Họ tên, Địa chỉ, Số điện thoại và nhấn "Đặt hàng".
+Then: Hệ thống thông báo "Đặt hàng thành công", xóa sạch giỏ hàng và chuyển về trang chủ.
+AC2:
+Given: Người dùng bỏ trống thông tin bắt buộc.
+When: Nhấn "Đặt hàng".
+Then: Hệ thống hiển thị cảnh báo yêu cầu nhập đủ thông tin.
+
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☐5  ☑8  ☐13	☑Must ☐Should ☐Could	Sprint 2	 
+
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào giỏ hàng có sản phẩm hợp lệ.
+Người dùng bắt buộc phải đăng nhập trước khi đặt hàng.
+Là chức năng cốt lõi của hệ thống bán nông sản.
+
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-008	 
+Title	Xem thông báo hệ thống	 
+Epic/Feature	Notifications (Thông báo)	 
+
+USER STORY STATEMENT
+Là một thành viên
+Tôi muốn nhận được thông báo về đơn hàng và khuyến mãi
+Để tôi không bỏ lỡ các tin tức quan trọng từ cửa hàng.
+
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Có thông báo mới gửi đến.
+When: Người dùng nhìn lên thanh Header.
+Then: Icon chuông hiển thị số lượng tin chưa đọc (badge màu đỏ).
+AC2:
+Given: Người dùng mở trang "Tất cả thông báo".
+When: Nhấn nút "Đánh dấu tất cả đã đọc".
+Then: Tất cả trạng thái tin chuyển thành đã đọc và số trên chuông về 0.
+
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☐Must ☑Should ☐Could	Sprint 3	 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào các sự kiện hệ thống như: đặt hàng, cập nhật đơn hàng, khuyến mãi.
+Cần cơ chế lưu trạng thái đã đọc/chưa đọc.
+Có thể mở rộng gửi thông báo qua email hoặc push notification.
+THÔNG TIN USER STORY	 
+Story ID	US-009	 
+Title	Chat trực tiếp với cửa hàng	 
+Epic/Feature	Customer Support (Hỗ trợ khách hàng)	 
+ 
+USER STORY STATEMENT
+Là một khách hàng đang gặp vướng mắc
+Tôi muốn nhắn tin trực tiếp cho Admin qua Chatbox
+Để tôi được giải đáp thắc mắc ngay lập tức mà không cần gọi điện.
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dùng ở bất kỳ trang nào.
+When: Nhấn vào biểu tượng Chat ở góc dưới màn hình.
+Then: Cửa sổ chat mở ra.
+AC2:
+Given: Người dùng nhập nội dung và nhấn Gửi.
+When: Tin nhắn được gửi đi.
+Then: Tin nhắn hiển thị trong khung chat và Admin nhận được thông báo.
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☐Must ☑Should ☐Could	Sprint 3	 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào hệ thống nhắn tin thời gian thực.
+Yêu cầu Admin hoặc người bán có mặt để phản hồi.
+Có thể lưu lịch sử chat để theo dõi sau này.
+
+ 
+
+THÔNG TIN USER STORY	 
+Story ID	US-010	 
+Title	Xem và chỉnh sửa hồ sơ cá nhân	 
+Epic/Feature	Account Management (Quản lý tài khoản)	 
+ 
+USER STORY STATEMENT
+Là một thành viên thân thiết
+Tôi muốn cập nhật thông tin cá nhân (SĐT, Địa chỉ)
+Để việc giao hàng các lần sau được chính xác và thuận tiện hơn.
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dùng đã đăng nhập.
+When: Vào trang "Hồ sơ cá nhân"
+Then: Hệ thống hiển thị thông tin hiện tại: Tên, Email, SĐT.
+AC2:
+Given: Người dùng thay đổi Số điện thoại.
+When: Nhấn nút "Lưu thay đổi".
+Then: Hệ thống cập nhật thông tin mới vào cơ sở dữ liệu và báo "Cập nhật thành công".
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☑3  ☐5  ☐8  ☐13	☐Must ☐Should ☑Could	Sprint 3	 
+ 
+GHI CHÚ / DEPENDENCIES
+Người dùng phải đăng nhập để thực hiện chức năng này.
+Thông tin cập nhật được sử dụng cho giao hàng.
+Không cho phép chỉnh sửa Email đã đăng ký (hoặc cần xác thực lại).
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-011
+Title	Đăng xuất khỏi hệ thống
+Epic/Feature	Authentication (Quản lý tài khoản)
+ 
+ 
+USER STORY STATEMENT
+Là một người dùng đã đăng nhập
+Tôi muốn đăng xuất khỏi tài khoản
+Để bảo vệ thông tin cá nhân khi tôi không sử dụng máy tính nữa (đặc biệt là máy công cộng).
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dùng đã đăng nhập.
+When: Nhấn vào nút "Đăng xuất" trên Header hoặc trang cá nhân.
+Then: Hệ thống xóa phiên đăng nhập, chuyển hướng về trang chủ và menu trở lại trạng thái của khách (Guest)..
+
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☑1  ☐2  ☐3  ☐5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 1	 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào trạng thái đăng nhập của người dùng.
+Cần xóa session/token sau khi đăng xuất.
+Đảm bảo an toàn thông tin người dùng trên máy công cộng.
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-012
+Title	Xem danh sách sản phẩm theo danh mục
+Epic/Feature	Home & Navigation (Trang chủ & Điều hướng)
+ 
+USER STORY STATEMENT
+Người dùng đang ở trang chủ.
+Tôi muốn xem danh sách các loại rau củ theo từng nhóm (Rau, Củ, Quả, Hạt)
+Để tôi dễ dàng lựa chọn loại thực phẩm mình đang cần mua mà không bị rối mắt.
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dùng đang ở trang chủ.
+When: Nhấn vào danh mục "Rau củ" trên thanh Sidebar..
+Then: Hệ thống chỉ hiển thị các sản phẩm thuộc nhóm Rau củ.
+AC2:
+Given: Đang xem danh sách sản phẩm.
+When: Chọn bộ lọc "Giá thấp đến cao"..
+Then: Danh sách sản phẩm được sắp xếp lại theo giá tăng dần.
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☐Must ☑Should ☐Could	Sprint 1	 
+ 
+GHI CHÚ / DEPENDENCIES
+ Phụ thuộc vào hệ thống phân loại danh mục sản phẩm.
+ Có thể kết hợp với bộ lọc giá, sắp xếp.
+ Giúp người dùng tìm sản phẩm nhanh hơn.
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-013
+Title	Chọn phương thức thanh toán COD
+Epic/Feature	Checkout (Thanh toán)
+ 
+ 
+USER STORY STATEMENT
+Là một người mua hàng
+Tôi muốn chọn phương thức "Thanh toán khi nhận hàng" (COD)
+Để tôi an tâm kiểm tra hàng hóa trước khi trả tiền mặt cho shipper.
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dùng đang ở bước Thanh toán.
+When: Chọn checkbox "Thanh toán khi nhận hàng" và nhấn Đặt hàng.
+Then: Hệ thống ghi nhận đơn hàng với trạng thái thanh toán là "Chưa thanh toán" (Unpaid).
+AC2:
+Given: Đặt hàng thành công với COD.
+When: Trang thông báo hiện ra.
+Then: Hệ thống hiển thị dòng nhắc nhở: "Vui lòng chuẩn bị tiền mặt khi nhận hàng".
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☑3  ☐5  ☐8  ☐13	☑Must ☐Should ☑Could	Sprint 2	 
+ 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào chức năng đặt hàng (US-007).
+Trạng thái thanh toán ban đầu là “Chưa thanh toán”.
+Có thể mở rộng thêm các phương thức thanh toán khác sau này
+
+THÔNG TIN USER STORY	 
+Story ID	US-014
+Title	Theo dõi lịch sử mua hàng
+Epic/Feature	Order Management (Quản lý đơn hàng)
+ 
+USER STORY STATEMENT
+Là một thành viên thân thiết
+Tôi muốn xem lại danh sách các đơn hàng đã đặt
+Để tôi kiểm tra trạng thái đơn hàng (đang giao/đã giao) hoặc mua lại các món cũ.
+ 
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dùng đã đăng nhập.When [Nhấn nút "Thêm vào giỏ hàng".
+When: Truy cập vào trang "Lịch sử đơn hàng" (hoặc My Orders).
+Then: Hệ thống hiển thị danh sách các đơn hàng cũ gồm: Mã đơn, Ngày đặt, Tổng tiền, Trạng thái.
+AC2:
+Given:Đang xem danh sách đơn hàng.
+When: Nhấn vào nút "Chi tiết" của một đơn hàng cụ thể.
+Then: Hệ thống hiển thị chi tiết các món rau củ đã mua trong đơn hàng đó.
+
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☐5  ☑8  ☐13	☐Must ☑Should ☐Could	Sprint 3	 
+ 
+GHI CHÚ / DEPENDENCIES
+Người dùng bắt buộc phải đăng nhập.
+Phụ thuộc vào dữ liệu đơn hàng đã được lưu trong hệ thống.
+Hỗ trợ người dùng mua lại sản phẩm cũ nhanh chóng.
+
+2. CHỨC NĂNG CỦA NGƯỜI DÂN BÁN HÀNG – USER STORY
+THÔNG TIN USER STORY	 
+Story ID	 US-NB-001
+Title	 Đăng ký tài khoản người dân bán hàng
+Epic/Feature	 Authentication (Quản lý tài khoản người bán)
+ 
+USER STORY STATEMENT
+Là một người dân bán hàng mới
+Tôi muốn đăng ký tài khoản người bán bằng email và mật khẩu
+Để đăng bán sản phẩm nông sản của mình trên hệ thống
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người dân đang ở trang Đăng ký người bán
+When: Nhập đầy đủ thông tin hợp lệ và nhấn “Đăng ký”
+Then: Hệ thống tạo tài khoản người bán thành công và chuyển về trang Đăng nhập
+AC2:
+Given: Email đã tồn tại trong hệ thống
+When: Nhấn “Đăng ký”
+Then: Hệ thống báo lỗi “Email đã được sử dụng”
+
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 1	 
+ 
+GHI CHÚ / DEPENDENCIES
+Email phải là duy nhất
+Có thể yêu cầu Admin duyệt tài khoản người bán
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-NB-002
+Title	 Đăng nhập tài khoản người bán
+Epic/Feature	 Authentication (Quản lý tài khoản người bán)
+ 
+ 
+USER STORY STATEMENT
+Là một người dân bán hàng
+Tôi muốn đăng nhập vào hệ thống bằng tài khoản người bán
+Để quản lý sản phẩm và đơn hàng của mình
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người bán đã có tài khoản hợp lệ
+When: Nhập đúng email và mật khẩu
+Then: Đăng nhập thành công và chuyển đến trang quản lý người bán
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☑3  ☐5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 1	 
+ 
+GHI CHÚ / DEPENDENCIES
+ Phụ thuộc vào US-NB-001
+ 
+ 
+THÔNG TIN USER STORY	 
+Story ID	 US-NB-003
+Title	 Đăng sản phẩm nông sản
+Epic/Feature	 Product Management (Quản lý sản phẩm)
+ 
+USER STORY STATEMENT
+Là một người dân bán hàng
+Tôi muốn đăng sản phẩm nông sản lên hệ thống
+Để bán sản phẩm của mình cho khách hàng
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người bán đã đăng nhập
+When: Nhập đầy đủ thông tin sản phẩm và nhấn “Đăng sản phẩm”
+Then: Sản phẩm được lưu và hiển thị (hoặc chờ Admin duyệt)
+ 
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 2	 
+ 
+GHI CHÚ / DEPENDENCIES
+ Phụ thuộc vào tài khoản người bán hợp lệ
+ 
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-NB-004
+Title	 Chỉnh sửa / xóa sản phẩm
+Epic/Feature	 Product Management
+ 
+ 
+USER STORY STATEMENT
+Là một người dân bán hàng
+Tôi muốn chỉnh sửa hoặc xóa sản phẩm đã đăng
+Để cập nhật thông tin chính xác hoặc ngừng bán
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Sản phẩm thuộc quyền quản lý của người bán
+When: Nhấn “Chỉnh sửa” và lưu thay đổi
+Then: Thông tin sản phẩm được cập nhật
+AC2:
+Given: Người bán nhấn “Xóa sản phẩm”
+When: Xác nhận xóa
+Then: Sản phẩm bị gỡ khỏi hệ thống
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☑3  ☐5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 2	 
+ 
+ 
+GHI CHÚ / DEPENDENCIES
+ Không cho phép sửa sản phẩm đang được giao
+ 
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-NB-005
+Title	 Xem đơn hàng của mình
+Epic/Feature	 Order Management (Quản lý đơn hàng)
+ 
+USER STORY STATEMENT
+Là một người dân bán hàng
+Tôi muốn xem danh sách các đơn hàng của mình
+Để biết khách đã đặt những sản phẩm nào
+ 
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người bán đã đăng nhập
+When: Truy cập trang “Đơn hàng của tôi”
+Then: Hiển thị danh sách đơn hàng liên quan đến người bán
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☑3  ☐5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 	 
+ 
+GHI CHÚ / DEPENDENCIES
+ Phụ thuộc vào chức năng đặt hàng của khách hàng
+ 
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-NB-006
+Title	 Cập nhật trạng thái đơn hàng
+Epic/Feature	  Order Management
+ 
+USER STORY STATEMENT
+Là một người dân bán hàng
+Tôi muốn cập nhật trạng thái đơn hàng (đang chuẩn bị, đang giao)
+Để khách hàng theo dõi tiến trình đơn hàng
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Đơn hàng thuộc người bán
+When: Thay đổi trạng thái đơn hàng
+Then: Trạng thái mới được cập nhật và thông báo cho khách hàng
+ 
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☑3  ☐5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 2	 
+ 
+GHI CHÚ / DEPENDENCIES
+ Phụ thuộc vào US-NB-005
+ 
+THÔNG TIN USER STORY	 
+Story ID	 US-NB-007
+Title	 Quản lý tồn kho
+Epic/Feature	 Inventory Management (Quản lý kho)
+ 
+ 
+
+USER STORY STATEMENT
+Là một người dân bán hàng
+Tôi muốn cập nhật số lượng tồn kho của sản phẩm
+Để tránh bán vượt quá số lượng thực tế
+ 
+
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Người bán chỉnh sửa số lượng tồn kho
+When: Lưu thay đổi
+Then: Hệ thống cập nhật số lượng mới
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☐Must ☑Should ☐Could	Sprint 	 
+ 
+GHI CHÚ / DEPENDENCIES
+ Liên quan đến chức năng đặt hàng
+  
+THÔNG TIN USER STORY	 
+Story ID	US-NB-008
+Title	 Xem doanh thu cá nhân
+Epic/Feature	 Revenue & Report (Báo cáo)
+ 
+USER STORY STATEMENT
+Là một người dân bán hàng
+Tôi muốn xem doanh thu từ các đơn hàng đã bán
+Để theo dõi hiệu quả kinh doanh của mình
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Có đơn hàng đã hoàn thành
+When: Truy cập trang “Doanh thu”
+Then: Hiển thị tổng doanh thu theo thời gian
+ 
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☐Must ☐Should ☑Could	Sprint 	 
+ 
+GHI CHÚ / DEPENDENCIES
+ Phụ thuộc vào dữ liệu đơn hàng đã hoàn tất
+ 
+
+3. CHỨC NĂNG CỦA QUẢN TRỊ VIÊN – USER STORY
+
+THÔNG TIN USER STORY	 
+Story ID	US-AD-001
+Title	Đăng nhập vào hệ thống quản trị (Admin Dashboard)
+Epic/Feature	Admin Auth (Bảo mật quản trị) 
+ 
+USER STORY STATEMENT
+Là một Quản trị viên (Admin)
+Tôi muốn đăng nhập vào khu vực quản trị riêng biệt
+Để tôi có quyền truy cập vào các chức năng quản lý hệ thống mà người thường không thấy.
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Admin truy cập đường dẫn /admin.
+When: Nhập đúng tài khoản Admin và nhấn Đăng nhập.
+Then: Hệ thống chuyển hướng vào trang Dashboard quản trị (thống kê tổng quan).
+AC2:
+Given: Người dùng thường cố truy cập /admin.
+When: Hệ thống kiểm tra quyền.
+Then: Hệ thống chặn truy cập và báo lỗi "Bạn không có quyền truy cập".
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☑ 3  ☐5  ☐8  ☐13	☑ Must ☐Should ☐Could	Sprint 1	 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào hệ thống xác thực người dùng (Authentication) đã được triển khai.
+Cần phân quyền rõ ràng giữa Admin và người dùng thường.
+Đường dẫn /admin phải được bảo vệ bằng middleware kiểm tra quyền.
+Là chức năng tiền đề cho tất cả các chức năng quản trị khác.
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-AD-002
+Title	Xem và quản lý danh sách tài khoản
+Epic/Feature	User Management (Quản lý người dùng)
+ 
+USER STORY STATEMENT
+Là một Quản trị viên
+Tôi muốn xem danh sách và khóa/mở khóa tài khoản người dùng
+Để tôi loại bỏ các tài khoản spam, lừa đảo hoặc vi phạm chính sách của sàn.
+ 
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Admin đang ở trang "Quản lý người dùng".
+When: Tìm kiếm theo Email hoặc Tên.
+Then: Hệ thống hiển thị danh sách người dùng khớp với từ khóa, phân loại rõ là Khách hàng hay Người bán.
+AC2:
+Given: Một tài khoản bị báo cáo vi phạm.
+When: Admin nhấn nút "Khóa tài khoản" (Ban).
+Then: Trạng thái tài khoản chuyển sang "Locked" và người đó không thể đăng nhập được nữa.
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 1	 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào US-AD-001 (Admin đăng nhập).
+Cần có cơ sở dữ liệu người dùng với các trường: vai trò, trạng thái (Active/Locked).
+Hành động khóa tài khoản phải ghi log hệ thống để phục vụ kiểm tra sau này.
+Không cho Admin tự khóa chính tài khoản của mình.
+ 
+THÔNG TIN USER STORY	 
+Story ID	US-AD-003
+Title	Thêm, sửa, xóa danh mục sản phẩm
+Epic/Feature	Catalog Management (Quản lý danh mục)
+ 
+USER STORY STATEMENT
+Là một Quản trị viên
+Tôi muốn tạo và chỉnh sửa các danh mục sản phẩm (VD: Rau ăn lá, Củ quả...)
+Để sắp xếp các sản phẩm trên website một cách khoa học, giúp khách hàng dễ tìm kiếm.
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Admin muốn thêm nhóm hàng mới.
+When: Nhập tên danh mục (VD: "Trái cây nhập khẩu") và nhấn Lưu.
+Then: Danh mục mới xuất hiện ngay lập tức trên thanh Menu của trang chủ.
+AC2:
+Given: Admin muốn xóa một danh mục đang chứa sản phẩm.
+When: Nhấn nút Xóa.
+Then: Hệ thống cảnh báo: "Danh mục này đang chứa sản phẩm, không thể xóa" (để tránh lỗi dữ liệu).
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 1	 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào US-AD-001 (Admin đăng nhập).
+Danh mục sản phẩm có quan hệ 1–n với sản phẩm, cần kiểm tra ràng buộc dữ liệu.
+Không cho phép xóa danh mục đang chứa sản phẩm.
+Thay đổi danh mục phải cập nhật ngay trên giao diện người dùng.
+
+THÔNG TIN USER STORY	 
+Story ID	US-AD-004
+Title	Duyệt hoặc từ chối sản phẩm mới đăng
+Epic/Feature	Product Moderation (Kiểm duyệt sản phẩm)
+ 
+ 
+USER STORY STATEMENT
+Là một Quản trị viên
+Tôi muốn xem xét các sản phẩm do người bán đăng lên trước khi hiển thị
+Để đảm bảo không có hàng cấm, hàng kém chất lượng hoặc hình ảnh phản cảm xuất hiện trên web.
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Có sản phẩm mới ở trạng thái "Chờ duyệt" (Pending).
+When: Admin nhấn nút "Chấp nhận" (Approve).
+Then: Sản phẩm chuyển trạng thái sang "Đang bán" (Active) và bắt đầu hiển thị cho người mua thấy.
+AC2:
+Given: Sản phẩm vi phạm quy định.
+When: Admin nhấn nút "Từ chối" và nhập lý do.
+Then: Sản phẩm bị ẩn đi và Người bán nhận được thông báo kèm lý do từ chối.
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☐5  ☑8  ☐13	☐Must ☑Should ☐Could	Sprint 2	 
+ 
+GHI CHÚ / DEPENDENCIES
+Phụ thuộc vào US-AD-001 (Admin đăng nhập).
+Phụ thuộc vào chức năng đăng sản phẩm của người bán.
+Cần có trạng thái sản phẩm: Pending – Active – Rejected.
+Khi từ chối sản phẩm, hệ thống cần gửi thông báo cho người bán kèm lý do.
+
+THÔNG TIN USER STORY	 
+Story ID	US-AD-005
+Title	Xem danh sách toàn bộ đơn hàng
+Epic/Feature	Order Management (Quản lý đơn hàng)
+ 
+USER STORY STATEMENT
+Là một Quản trị viên
+Tôi muốn có cái nhìn tổng quan về tất cả đơn hàng trên hệ thống
+Để tôi có thể hỗ trợ giải quyết tranh chấp khi khách hàng khiếu nại về đơn hàng.
+ 
+ 
+
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Admin truy cập trang Quản lý đơn hàng.
+When: Chọn bộ lọc theo trạng thái (Ví dụ: "Đã giao", "Đã hủy").
+Then: Hệ thống hiển thị danh sách các đơn hàng tương ứng.
+AC2:
+Given: Một đơn hàng bị treo quá lâu.
+When: Admin xem chi tiết.
+Then: Admin thấy được thông tin người mua, người bán và trạng thái hiện tại để liên hệ xử lý.
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☑5  ☐8  ☐13	☑Must ☐Should ☐Could	Sprint 2	 
+ 
+GHI CHÚ / DEPENDENCIES
+ Phụ thuộc vào US-AD-001 (Admin đăng nhập).
+ Phụ thuộc vào chức năng đặt hàng của khách hàng.
+ Admin chỉ có quyền xem và hỗ trợ, không trực tiếp thay đổi trạng thái thanh toán.
+ Dữ liệu đơn hàng phải được đồng bộ giữa người mua – người bán – admin.
+
+THÔNG TIN USER STORY	 
+Story ID	US-AD-006
+Title	Xem biểu đồ thống kê kinh doanh
+Epic/Feature	Reports & Analytics (Báo cáo & Phân tích)
+ 
+USER STORY STATEMENT
+Là một Quản trị viên
+Tôi muốn xem biểu đồ doanh thu và số lượng người dùng mới theo tháng
+Để tôi đánh giá được hiệu quả kinh doanh của sàn và đưa ra chiến lược phát triển.
+ 
+ACCEPTANCE CRITERIA (Given-When-Then)
+AC1:
+Given: Admin vào trang Dashboard.
+When: Chọn khoảng thời gian "Tháng này".
+Then: Hệ thống hiển thị biểu đồ cột thể hiện doanh thu từng ngày trong tháng.
+AC2:
+Given: Admin muốn biết sản phẩm nào bán chạy nhất.
+When: Xem mục "Top sản phẩm".
+Then: Hệ thống liệt kê 5 sản phẩm có số lượng bán ra cao nhất.
+ 
+ƯỚC LƯỢNG & ƯU TIÊN	 
+Story Points	Priority (MoSCoW)	Sprint	Assignee
+☐1  ☐2  ☐3  ☐5  ☑8  ☐13	☐Must ☑Should ☐Could	Sprint 3	 
+ 
+GHI CHÚ / DEPENDENCIES
+ Phụ thuộc vào US-AD-001 (Admin đăng nhập).
+Phụ thuộc vào dữ liệu đơn hàng, người dùng và sản phẩm đã phát sinh.
+Dữ liệu thống kê được tổng hợp theo thời gian thực hoặc theo ngày.
+Chỉ hiển thị dữ liệu tổng hợp, không chỉnh sửa dữ liệu gốc.
+
