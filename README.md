@@ -14,3 +14,13 @@ The React Compiler is not enabled on this template because of its impact on dev 
 ## Expanding the ESLint configuration
 
 If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+
+
+# Lệnh cài thư viện cho Vendor
+- npm install chess.js@1.4.0
+- npm install react-chessboard@5.8.6
+- npm install react-youtube@10.1.0
+- npm install xlsx@0.18.5
+- sau khi cài xong thì chạy lệnh: npm run dev
+- 1 số thư viện còn thiếu sẽ bổ sung sau
