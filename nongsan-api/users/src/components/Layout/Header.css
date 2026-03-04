@@ -1,0 +1,169 @@
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 40px;
+  background-color: #60ce65; /* Màu xanh nông sản */
+  color: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 20px;
+  padding: 5px 15px;
+  width: 40%;
+}
+
+.search-box input {
+  border: none;
+  outline: none;
+  width: 100%;
+  margin-left: 10px;
+}
+
+.nav-links a {
+  color: white;
+  text-decoration: none;
+  margin-left: 20px;
+  font-weight: 500;
+}
+
+.nav-links a:hover {
+  text-decoration: underline;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.cart-icon {
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* --- PHẦN THÔNG BÁO (NOTIFICATION) --- */
+.notification-wrapper {
+  position: relative;
+  cursor: pointer;
+  margin-right: 15px; /* Cách icon giỏ hàng một chút */
+}
+
+.notification-icon {
+  font-size: 20px;
+  color: white;
+  transition: 0.3s;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4444;
+  color: white;
+  border-radius: 50%;
+  padding: 2px 5px;
+  font-size: 10px;
+  font-weight: bold;
+  border: 1px solid white;
+}
+
+/* Menu xổ xuống */
+.notification-dropdown {
+  position: absolute;
+  top: 40px;
+  right: -10px;
+  width: 300px;
+  background: white;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  border-radius: 8px;
+  z-index: 1000;
+  overflow: hidden;
+  border: 1px solid #eee;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Mũi tên nhọn chỉ lên trên */
+.notification-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 14px;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid white;
+}
+
+.notify-header {
+  padding: 10px 15px;
+  border-bottom: 1px solid #eee;
+  font-weight: bold;
+  color: #333;
+  background-color: #f9f9f9;
+}
+
+.notify-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.notify-item {
+  display: flex;
+  gap: 10px;
+  padding: 10px 15px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: 0.2s;
+  align-items: start;
+}
+
+.notify-item:hover {
+  background-color: #f1f8e9; 
+}
+
+.notify-item.unread {
+  background-color: #e8f5e9; 
+}
+
+.notify-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #eee;
+}
+
+.notify-content h4 {
+  font-size: 14px;
+  margin: 0 0 3px;
+  color: #333;
+}
+
+.notify-content p {
+  font-size: 12px;
+  color: #666;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.notify-time {
+  font-size: 10px;
+  color: #999;
+  margin-top: 5px;
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
