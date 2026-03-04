@@ -1,0 +1,39 @@
+PRODUCT BACKLOG
+Đồ án Chuyên ngành CNPM - Trường ĐH Kiến trúc Đà Nẵng
+Tên dự án:	Xây dựng hệ thống bán sản phẩm nông sản	Nhóm:	 Những người con xứ Quảng
+Product Owner:	Văn Phú Đại	Ngày cập nhật:	27/01/2026
+
+ID	Epic	User Story	Acceptance Criteria	Points	Priority	Sprint	Status
+US-001	Auth	Là khách hàng, tôi muốn đăng ký tài khoản để sử dụng hệ thống	Đăng ký thành công với email hợp lệ	3	Must	Sprint 1	Todo
+US-002	Auth	Là khách hàng, tôi muốn đăng nhập để mua hàng	Đăng nhập đúng thông tin	5	Must	Sprint 1	Todo
+US-003	Home	Là người mua, tôi muốn tìm kiếm sản phẩm theo từ khóa	Hiển thị kết quả đúng	5	Must	Sprint 1	Todo
+US-004	Product	Là người mua, tôi muốn xem chi tiết sản phẩm	Hiển thị đầy đủ thông tin	3	Must	Sprint 1	Todo
+US-005	Cart	Là người mua, tôi muốn thêm sản phẩm vào giỏ hàng	Giỏ hàng cập nhật số lượng	5	Must	Sprint 2	Todo
+US-006	Cart	Là người mua, tôi muốn xem và cập nhật giỏ hàng	Tổng tiền thay đổi theo số lượng	8	Must	Sprint 2	Todo
+US-007	Checkout	Là người mua, tôi muốn đặt hàng và thanh toán	Đặt hàng thành công	8	Must	Sprint 2	Todo
+US-008	Notify	Là thành viên, tôi muốn nhận thông báo đơn hàng	Hiển thị thông báo mới	5	Should	Sprint 3	Todo
+US-009	Support	Là khách hàng, tôi muốn chat với cửa hàng	Gửi/nhận tin nhắn	5	Should	Sprint 3	Todo
+US-010	Account	Là thành viên, tôi muốn chỉnh sửa hồ sơ cá nhân	Cập nhật thông tin thành công	3	Could	Sprint 3	Todo
+US-011	Auth	Là người dùng, tôi muốn đăng xuất	Phiên đăng nhập bị xóa	1	Must	Sprint 1	Todo
+US-012	Home	Là người dùng, tôi muốn xem sản phẩm theo danh mục	Lọc đúng danh mục	5	Should	Sprint 1	Todo
+US-013	Checkout	Là người mua, tôi muốn thanh toán COD	Đơn hàng ở trạng thái chưa thanh toán	3	Could	Sprint 2	Todo
+US-014	Order	Là thành viên, tôi muốn xem lịch sử mua hàng	Hiển thị danh sách đơn	8	Should	Sprint 3	Todo
+  US-NB-001	Auth	Là người dân bán hàng, tôi muốn đăng ký tài khoản người bán	Đăng ký thành công với email hợp lệ	5	Must	Sprint 1	Todo
+  US-NB-002	Auth	Là người dân bán hàng, tôi muốn đăng nhập hệ thống	Đăng nhập đúng thông tin	3	Must	Sprint 1	Todo
+US-NB-003	Product	Là người bán, tôi muốn đăng sản phẩm nông sản	Sản phẩm được lưu / chờ duyệt	5	Must	Sprint 2	Todo
+US-NB-004	Product	Là người bán, tôi muốn chỉnh sửa hoặc xóa sản phẩm	Cập nhật hoặc gỡ sản phẩm	3	Must	Sprint 2	Todo
+US-NB-005	Order	Là người bán, tôi muốn xem đơn hàng của mình	Hiển thị danh sách đơn liên quan	3	Must	Sprint 2	Todo
+US-NB-006	Order	Là người bán, tôi muốn cập nhật trạng thái đơn hàng	Trạng thái được cập nhật & thông báo	3	Must	Sprint 2	Todo
+US-NB-007	Inventory	Là người bán, tôi muốn quản lý tồn kho sản phẩm	Cập nhật số lượng tồn kho	5	Should	Sprint 3	Todo
+US-NB-008	Report	Là người bán, tôi muốn xem doanh thu cá nhân	Hiển thị doanh thu theo thời gian	5	Could	Sprint 3	Todo
+US-AD-001	Admin Auth	Là quản trị viên, tôi muốn đăng nhập vào hệ thống quản trị	Đăng nhập đúng quyền Admin	3	Must	Sprint 1	Todo
+US-AD-002	User Mgmt	Là quản trị viên, tôi muốn quản lý tài khoản người dùng	Xem, khóa/mở khóa tài khoản	5	Must	Sprint 1	Todo
+US-AD-003	Catalog	Là quản trị viên, tôi muốn quản lý danh mục sản phẩm	Thêm/sửa/xóa danh mục hợp lệ	5	Must	Sprint 1	Todo
+  US-AD-004	Moderation	Là quản trị viên, tôi muốn duyệt sản phẩm người bán	Duyệt hoặc từ chối sản phẩm	8	Should	Sprint 2	Todo
+  US-AD-005	Order Mgmt	Là quản trị viên, tôi muốn quản lý toàn bộ đơn hàng	Xem, lọc, xem chi tiết đơn	5	Must	Sprint 2	Todo
+  US-AD-006	Reports	Là quản trị viên, tôi muốn xem báo cáo thống kê	Hiển thị biểu đồ & top sản phẩm	8	Should	Sprint 3	Todo
+
+TỔNG HỢP
+Tổng số Stories: 28_	Must have: _ 18___	Should have: _ 7___	Could have: _ 3___
+Tổng Story Points: __ 133__	Sprint 1: __ 43 pts	Sprint 2: ___51 pts	Sprint 3: __39 pts
+
