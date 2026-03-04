@@ -1,0 +1,163 @@
+/* src/pages/Checkout/Checkout.css */
+
+.checkout-container {
+  display: flex;
+  max-width: 1200px;
+  margin: 40px auto;
+  gap: 30px;
+  padding: 0 20px;
+  flex-wrap: wrap;
+}
+
+/* --- CỘT TRÁI: FORM THÔNG TIN --- */
+.checkout-form {
+  flex: 2;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  min-width: 300px;
+}
+
+.checkout-form h2 {
+  color: #2e7d32;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input, 
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 15px;
+  transition: 0.3s;
+  box-sizing: border-box; 
+}
+
+.form-group input:focus, 
+.form-group textarea:focus {
+  border-color: #82ae46;
+  outline: none;
+  box-shadow: 0 0 5px rgba(130, 174, 70, 0.3);
+}
+
+/* --- PHƯƠNG THỨC THANH TOÁN --- */
+.payment-method {
+  margin-top: 30px;
+}
+
+.payment-method h3 {
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.payment-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid #eee;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.payment-option:hover {
+  background-color: #f9f9f9;
+  border-color: #82ae46;
+}
+
+.payment-option input {
+  transform: scale(1.2); 
+  accent-color: #82ae46;
+}
+
+/* Nút đặt hàng */
+.place-order-btn {
+  width: 100%;
+  padding: 15px;
+  background-color: #82ae46;
+  color: white;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 30px;
+  cursor: pointer;
+  margin-top: 30px;
+  transition: 0.3s;
+  text-transform: uppercase;
+}
+
+.place-order-btn:hover {
+  background-color: #6a9134;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* --- CỘT PHẢI: TÓM TẮT ĐƠN HÀNG --- */
+.checkout-summary {
+  flex: 1;
+  background: white;
+  padding: 30px;
+  border-radius: 8px;
+  height: fit-content;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  min-width: 300px;
+  border: 1px solid #f0f0f0;
+}
+
+.checkout-summary h3 {
+  margin-bottom: 20px;
+  font-size: 20px;
+  color: #333;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  font-size: 15px;
+  color: #555;
+}
+
+/* --- PHẦN VOUCHER (MỚI) --- */
+.voucher-tags {
+  margin-top: 8px;
+}
+
+.voucher-tag {
+  display: inline-block;
+  background-color: #f1f8e9;
+  color: #2e7d32;
+  border: 1px dashed #82ae46; 
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+  margin-right: 8px; 
+  margin-bottom: 5px;
+}
+
+.voucher-tag:hover {
+  background-color: #82ae46;
+  color: white;
+  border-style: solid; 
+  transform: translateY(-2px);
+}
