@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiEye, FiEyeOff, FiLogIn } from 'react-icons/fi';
-import { FaGoogle, FaFacebookF } from 'react-icons/fa';
 import { authAPI } from '../../api/apiClient';
 import { setAuthSession } from '../../utils/authStorage';
 import './Auth.css';
@@ -154,18 +153,6 @@ const Login = () => {
             <div className="lockout-hint">{getLockoutMessage(lockSeconds)}</div>
           )}
         </form>
-
-        <div className="social-login">
-          <div className="social-divider">Hoặc đăng nhập bằng</div>
-          <div className="social-btn-group">
-            <button className="social-btn google">
-              <FaGoogle /> Google
-            </button>
-            <button className="social-btn facebook">
-              <FaFacebookF /> Facebook
-            </button>
-          </div>
-        </div>
 
         <div className="auth-link">
           Bạn chưa có tài khoản? <Link to="/register">Đăng ký ngay</Link>

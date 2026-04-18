@@ -106,7 +106,7 @@ const Checkout = () => {
 
     try {
       setApplyingVoucher(true);
-      const result = await vouchersAPI.validateCode(code, totalPrice);
+      const result = await vouchersAPI.validateCode(code, totalPrice, safeCart);
       if (!result) {
         setVoucherError('Khong the ap dung voucher luc nay.');
         return;

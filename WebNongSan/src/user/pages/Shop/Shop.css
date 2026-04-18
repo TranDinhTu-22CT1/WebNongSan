@@ -122,10 +122,67 @@
 .sort-select:focus {
   border-color: #2e7d32;
 }
+
+.results-summary {
+  margin-bottom: 20px;
+  color: #6b6b6b;
+  font-size: 14px;
+}
+
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 25px;
+}
+
+.pagination-bar {
+  margin-top: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.pagination-pages {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.pagination-btn {
+  min-width: 42px;
+  height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid #d8e7d4;
+  background: #fff;
+  color: #2e7d32;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.pagination-btn:hover:not(:disabled) {
+  background: #edf7ea;
+  border-color: #2e7d32;
+}
+
+.pagination-btn.active {
+  background: #2e7d32;
+  color: #fff;
+  border-color: #2e7d32;
+}
+
+.pagination-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.pagination-nav {
+  min-width: 84px;
 }
 
 /* Card Style (Dùng chung) */
@@ -336,6 +393,11 @@
     align-items: flex-start;
     gap: 15px;
   }
+
+  .pagination-bar {
+    justify-content: flex-start;
+  }
+
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;

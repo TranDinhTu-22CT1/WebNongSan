@@ -340,6 +340,13 @@
   border-radius: 4px;
   cursor: pointer;
 }
+.btn-buy-now:link,
+.btn-buy-now:visited,
+.btn-buy-now:hover,
+.btn-buy-now:active,
+.btn-buy-now:focus {
+  color: #fff;
+}
 .btn-buy-now:hover { background: #1b5e20; }
 
 .pd-policy {
@@ -352,6 +359,209 @@
   display: flex;
   align-items: center;
   gap: 5px;
+}
+
+/* --- TABS SECTION --- */
+.pd-tabs-section {
+  margin-top: 40px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  overflow: hidden;
+}
+
+.pd-tabs-header {
+  display: flex;
+  border-bottom: 1px solid #eee;
+  background: #fdfdfd;
+}
+
+.tab-btn {
+  padding: 15px 30px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #666;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.tab-btn:hover {
+  color: #2e7d32;
+}
+
+.tab-btn.active {
+  color: #2e7d32;
+  border-bottom-color: #2e7d32;
+  background: white;
+}
+
+.pd-tabs-content {
+  padding: 30px;
+}
+
+/* --- REVIEWS SECTION --- */
+.pd-reviews-section {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.review-item {
+  padding: 20px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border: 1px solid #eee;
+}
+
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+}
+
+.review-user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.review-avatar {
+  width: 40px;
+  height: 40px;
+  background: #2e7d32;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.review-user {
+  display: block;
+  font-weight: 600;
+  color: #333;
+}
+
+.review-date {
+  display: block;
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
+.review-comment {
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.review-image {
+  margin-top: 12px;
+  width: 180px;
+  max-width: 100%;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.review-image.preview {
+  width: 140px;
+}
+
+.review-form-container {
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.review-form-container h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.review-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #555;
+}
+
+.rating-select {
+  display: flex;
+  gap: 5px;
+}
+
+.star-icon.interactive {
+  cursor: pointer;
+  font-size: 24px;
+  transition: transform 0.2s;
+}
+
+.star-icon.interactive:hover {
+  transform: scale(1.2);
+}
+
+.review-form textarea {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-family: inherit;
+  resize: vertical;
+}
+
+.review-form textarea:focus {
+  outline: none;
+  border-color: #2e7d32;
+}
+
+.btn-submit-review {
+  align-self: flex-start;
+  padding: 12px 24px;
+  background: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.btn-submit-review:hover {
+  background: #1b5e20;
+}
+
+.btn-submit-review:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.review-gate-message {
+  color: #475569;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 12px;
 }
 
 /* --- PHẦN DƯỚI (BOTTOM SECTION) --- */

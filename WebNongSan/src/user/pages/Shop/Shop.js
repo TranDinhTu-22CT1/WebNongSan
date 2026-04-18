@@ -16,6 +16,8 @@ const Shop = () => {
   const [isCategoryOpen, setIsCategoryOpen] = useState(true);
   const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
   const [quantities, setQuantities] = useState({});
+  const [currentPage, setCurrentPage] = useState(1);
+  const productsPerPage = 9;
 
   // Update search query when URL search param changes
   useEffect(() => {
@@ -96,6 +98,22 @@ const Shop = () => {
   } else if (sortOrder === "price-desc") {
     filteredProducts.sort((a, b) => b.price - a.price);
   }
+
+  const totalPages = Math.max(1, Math.ceil(filteredProducts.length / productsPerPage));
+  const paginatedProducts = filteredProducts.slice(
+    (currentPage - 1) * productsPerPage,
+    currentPage * productsPerPage
+  );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [category, sortOrder, searchQuery]);
+
+  useEffect(() => {
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   // Lấy tên hiển thị hiện tại để hiện lên tiêu đề
   const currentCategoryName = categories.find(c => c.id === category)?.name;
@@ -178,10 +196,15 @@ const Shop = () => {
                 </select>
               </div>
             </div>
+            <div className="results-summary">
+              Hiển thị {filteredProducts.length === 0 ? 0 : (currentPage - 1) * productsPerPage + 1}
+              -{Math.min(currentPage * productsPerPage, filteredProducts.length)} / {filteredProducts.length} sản phẩm
+            </div>
             
             {filteredProducts.length > 0 ? (
+              <>
               <div className="products-grid">
-                  {filteredProducts.map(product => (
+                  {paginatedProducts.map(product => (
                     <div key={product.id} className="modern-product-card">
                       <div className="card-badges">
                         <span className="badge-discount">-15%</span>
@@ -253,6 +276,43 @@ const Shop = () => {
                     </div>
                   ))}
               </div>
+              {totalPages > 1 && (
+                <div className="pagination-bar">
+                  <button
+                    type="button"
+                    className="pagination-btn pagination-nav"
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                  >
+                    Truoc
+                  </button>
+                  <div className="pagination-pages">
+                    {Array.from({ length: totalPages }, (_, index) => {
+                      const page = index + 1;
+
+                      return (
+                        <button
+                          type="button"
+                          key={page}
+                          className={`pagination-btn ${currentPage === page ? 'active' : ''}`}
+                          onClick={() => setCurrentPage(page)}
+                        >
+                          {page}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <button
+                    type="button"
+                    className="pagination-btn pagination-nav"
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                  >
+                    Sau
+                  </button>
+                </div>
+              )}
+              </>
             ) : (
               <div style={{textAlign: 'center', padding: '40px', color: '#666', background: '#f9f9f9', borderRadius: '12px'}}>
                 <img src="https://cdn-icons-png.flaticon.com/512/11329/11329060.png" alt="Empty" style={{width: '100px', opacity: 0.5, marginBottom: '20px'}} />

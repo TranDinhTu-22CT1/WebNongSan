@@ -260,6 +260,62 @@ export const productsAPI = {
   }
 };
 
+// Reviews API
+export const reviewsAPI = {
+  getByProduct: async (productId) => {
+    const payload = await apiCall(`/review.php?action=list_product&product_id=${encodeURIComponent(productId)}`, 'GET', null, { withAuth: false });
+    const items = unwrapListPayload(payload);
+
+    return items.map((item) => ({
+      id: Number(item.id || 0),
+      user: item.customer_name || 'Khach hang',
+      rating: Number(item.rating || 0),
+      comment: item.comment || '',
+      image: item.review_img || '',
+      date: item.review_date || (item.created_at ? new Date(item.created_at).toLocaleDateString('vi-VN') : ''),
+    }));
+  },
+
+  canRate: async (productId) => {
+    const payload = await apiCall(`/review.php?action=can_rate&product_id=${encodeURIComponent(productId)}`, 'GET');
+    return {
+      canRate: Boolean(payload?.can_rate),
+      reason: String(payload?.reason || ''),
+    };
+  },
+
+  create: async ({ productId, rating, comment, imageFile }) => {
+    const token = getToken();
+    if (!token) {
+      throw new Error('Vui lòng đăng nhập để đánh giá');
+    }
+
+    const formData = new FormData();
+    formData.append('product_id', String(productId));
+    formData.append('rating', String(rating));
+    formData.append('comment', String(comment || '').trim());
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
+    const res = await fetch(`${API_BASE_URL}/review.php?action=create`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${token}` },
+      body: formData,
+    });
+
+    const responseText = await res.text();
+    const data = parseJsonSafely(responseText);
+
+    if (!res.ok || data?.status !== 'success') {
+      const message = data?.message || responseText || 'Gửi đánh giá thất bại';
+      throw buildApiError(message, res.status);
+    }
+
+    return data;
+  },
+};
+
 // Orders API
 export const ordersAPI = {
   create: (items, totalPrice, shippingAddress, paymentMethod, customerPhone, customerName, voucherMeta = null) =>
@@ -320,6 +376,27 @@ export const notificationsAPI = {
     apiCall('/admin_notifications.php?action=mark_all_read_user', 'POST', {})
 };
 
+// Banner API
+export const bannersAPI = {
+  getAll: async () => {
+    const payload = await apiCall('/banner.php?action=list', 'GET', null, { withAuth: false });
+    const system = Array.isArray(payload?.data?.system) ? payload.data.system : [];
+    const promo = Array.isArray(payload?.data?.promo) ? payload.data.promo : [];
+
+    return {
+      system: system.map((item) => ({
+        ...item,
+        image_path: normalizeImagePath(item.image_path || ''),
+      })),
+      promo: promo.map((item) => ({
+        ...item,
+        image_path: normalizeImagePath(item.image_path || ''),
+        position: Number(item.position || 0),
+      })),
+    };
+  },
+};
+
 // Contact API
 export const contactAPI = {
   submit: (name, email, message) =>
@@ -345,18 +422,71 @@ export const vouchersAPI = {
         date: item.end_date ? new Date(item.end_date).toLocaleDateString('vi-VN') : '',
         minOrder: Number(item.min_order_value || 0),
         maxDiscount: item.max_discount_value != null ? Number(item.max_discount_value) : null,
+        scope: String(item.scope || 'order').toLowerCase(),
+        productId: Number(item.product_id || 0),
+        productName: String(item.product_name || ''),
+        productImage: String(item.product_image || ''),
         type: item.type || 'percent',
         value: valueNum,
       };
     });
   },
 
-  validateCode: async (code, orderTotal) => {
+  validateCode: async (code, orderTotal, cartItems = []) => {
     const payload = await apiCall('/promotions.php?action=validate_code', 'POST', {
       code,
       order_total: Number(orderTotal || 0),
+      cart_items: Array.isArray(cartItems) ? cartItems : [],
     });
     return payload?.data || null;
+  },
+
+  purchaseGiftVoucher: async ({
+    amountPaid,
+    voucherMode = 'fixed',
+    percentRate = 50,
+    minOrderValue = 0,
+    expiresInDays = 90,
+    recipientNote = '',
+  }) => {
+    const payload = await apiCall('/promotions.php?action=purchase_gift_voucher', 'POST', {
+      amount_paid: Number(amountPaid || 0),
+      voucher_mode: String(voucherMode || 'fixed').toLowerCase(),
+      percent_rate: Number(percentRate || 0),
+      min_order_value: Number(minOrderValue || 0),
+      expires_in_days: Number(expiresInDays || 90),
+      recipient_note: String(recipientNote || '').trim(),
+    });
+
+    return payload?.data || null;
+  },
+
+  getMyPurchasedGiftVouchers: async () => {
+    const payload = await apiCall('/promotions.php?action=get_my_purchased_vouchers', 'GET');
+    const items = unwrapListPayload(payload);
+
+    return items.map((item) => {
+      const isPercent = String(item.voucher_type || '').toLowerCase() === 'percent';
+      const value = Number(item.voucher_value || 0);
+      const maxDiscount = item.max_discount_value != null ? Number(item.max_discount_value) : null;
+
+      return {
+        id: Number(item.id || 0),
+        code: String(item.code || ''),
+        amountPaid: Number(item.amount_paid || 0),
+        status: String(item.status || 'active'),
+        voucherType: isPercent ? 'percent' : 'fixed',
+        voucherValue: value,
+        minOrder: Number(item.min_order_value || 0),
+        maxDiscount,
+        recipientNote: String(item.recipient_note || ''),
+        createdAt: item.created_at || '',
+        expiresAt: item.expires_at || '',
+        discountText: isPercent
+          ? `Giam ${value}% (toi da ${Number(maxDiscount || 0).toLocaleString('vi-VN')}d)`
+          : `Giam ${value.toLocaleString('vi-VN')}d`,
+      };
+    });
   },
 };
 

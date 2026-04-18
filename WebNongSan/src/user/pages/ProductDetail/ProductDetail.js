@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate, useLocation } from 'react-router-dom';
 import { useCart } from "../../store/CartContext";
-import { productsAPI } from '../../api/apiClient';
+import { productsAPI, reviewsAPI } from '../../api/apiClient';
+import { getStoredUser } from '../../utils/authStorage';
 import { FaStar, FaCheckCircle, FaTruck, FaShieldAlt, FaSearchPlus, FaTimes, FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { FiStar, FiShoppingBag, FiMessageSquare } from 'react-icons/fi';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const location = useLocation();
   const { addToCart } = useCart();
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
@@ -19,6 +22,13 @@ const ProductDetail = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
+  const [activeTab, setActiveTab] = useState('description');
+  const [reviews, setReviews] = useState([]);
+  const [isLoadingReviews, setIsLoadingReviews] = useState(false);
+  const [canRate, setCanRate] = useState(false);
+  const [ratingGateMessage, setRatingGateMessage] = useState('Vui lòng đăng nhập để đánh giá');
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [newReview, setNewReview] = useState({ rating: 5, comment: '', imageFile: null, imagePreview: '' });
 
   // Fetch product and all products from backend
   useEffect(() => {
@@ -49,6 +59,42 @@ const ProductDetail = () => {
     fetchAllProducts();
   }, [id]);
 
+  useEffect(() => {
+    const loadReviews = async () => {
+      try {
+        setIsLoadingReviews(true);
+        const data = await reviewsAPI.getByProduct(id);
+        setReviews(Array.isArray(data) ? data : []);
+      } catch (err) {
+        console.error('Failed to fetch reviews:', err);
+        setReviews([]);
+      } finally {
+        setIsLoadingReviews(false);
+      }
+    };
+
+    const checkCanRate = async () => {
+      const user = getStoredUser();
+      if (!user) {
+        setCanRate(false);
+        setRatingGateMessage('Vui lòng đăng nhập để đánh giá sản phẩm');
+        return;
+      }
+
+      try {
+        const result = await reviewsAPI.canRate(id);
+        setCanRate(result.canRate);
+        setRatingGateMessage(result.reason || (result.canRate ? '' : 'Bạn chưa đủ điều kiện để đánh giá'));
+      } catch (err) {
+        setCanRate(false);
+        setRatingGateMessage('Bạn chỉ có thể đánh giá sau khi đã mua sản phẩm này');
+      }
+    };
+
+    loadReviews();
+    checkCanRate();
+  }, [id]);
+
   // Reset state when product changes
   useEffect(() => {
     if (product && allProducts.length > 0) {
@@ -70,6 +116,14 @@ const ProductDetail = () => {
     }
   }, [product, allProducts]);
 
+  useEffect(() => {
+    return () => {
+      if (newReview.imagePreview) {
+        URL.revokeObjectURL(newReview.imagePreview);
+      }
+    };
+  }, [newReview.imagePreview]);
+
   if (loading) {
     return <div className="not-found">Đang tải sản phẩm... <Link to="/">Về trang chủ</Link></div>;
   }
@@ -90,8 +144,15 @@ const ProductDetail = () => {
   };
 
   const productImages = getProductImages();
+  const voucherFromQuery = new URLSearchParams(location.search).get('voucher') || '';
   const vendorId = product.vendor_id || product.vendorId || product.seller_id || product.user_id || '';
   const vendorName = product.vendor_name || product.vendorName || product.seller_name || 'Nha cung cap';
+  const descriptionText = String(product.description || product.desc || '').trim();
+  const descriptionParagraphs = descriptionText
+    ? descriptionText.split(/\r?\n+/).map((paragraph) => paragraph.trim()).filter(Boolean)
+    : [];
+  const hasDescription = descriptionParagraphs.length > 0;
+  const canExpandDescription = descriptionText.length > 280 || descriptionParagraphs.length > 3;
 
   const handleQuantity = (num) => {
     if (quantity + num >= 1) setQuantity(quantity + num);
@@ -111,6 +172,62 @@ const ProductDetail = () => {
   const handlePrevImage = (e) => {
     e.stopPropagation();
     setCurrentImageIndex((prev) => (prev === 0 ? productImages.length - 1 : prev - 1));
+  };
+
+  const handleReviewImageChange = (e) => {
+    const file = e.target.files?.[0] || null;
+    if (newReview.imagePreview) {
+      URL.revokeObjectURL(newReview.imagePreview);
+    }
+
+    if (!file) {
+      setNewReview((prev) => ({ ...prev, imageFile: null, imagePreview: '' }));
+      return;
+    }
+
+    const preview = URL.createObjectURL(file);
+    setNewReview((prev) => ({ ...prev, imageFile: file, imagePreview: preview }));
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!canRate || isSubmittingReview) return;
+    if (newReview.comment.trim() === '') return;
+
+    try {
+      setIsSubmittingReview(true);
+      await reviewsAPI.create({
+        productId: id,
+        rating: newReview.rating,
+        comment: newReview.comment,
+        imageFile: newReview.imageFile,
+      });
+
+      if (newReview.imagePreview) {
+        URL.revokeObjectURL(newReview.imagePreview);
+      }
+
+      setNewReview({ rating: 5, comment: '', imageFile: null, imagePreview: '' });
+
+      alert('Đánh giá của bạn đã được gửi, vui lòng chờ duyệt.');
+
+      const refreshed = await reviewsAPI.getByProduct(id);
+      setReviews(Array.isArray(refreshed) ? refreshed : []);
+    } catch (err) {
+      alert(err?.message || 'Gửi đánh giá thất bại');
+    } finally {
+      setIsSubmittingReview(false);
+    }
+  };
+
+  const handleBuyNow = () => {
+    const added = addToCart(product, Math.max(1, quantity));
+    if (added) {
+      if (voucherFromQuery.trim()) {
+        localStorage.setItem('selectedVoucherCode', voucherFromQuery.trim().toUpperCase());
+      }
+      navigate('/checkout');
+    }
   };
 
   return (
@@ -158,7 +275,7 @@ const ProductDetail = () => {
             <span className="stars">
                 {[...Array(5)].map((_, i) => <FaStar key={i} color="#ffc107" />)}
             </span>
-            <span className="review-count">(19 đánh giá) | 120 đã bán</span>
+            <span className="review-count">({reviews.length} đánh giá) | 120 đã bán</span>
           </div>
 
           <div className="pd-price-box">
@@ -200,11 +317,11 @@ const ProductDetail = () => {
             </div>
             <button className="btn-add-cart" onClick={() => addToCart(product, Math.max(1, quantity))}>Thêm vào giỏ</button>
             {vendorId ? (
-              <Link to={`/messages?vendor=${encodeURIComponent(vendorId)}&name=${encodeURIComponent(vendorName)}`} className="btn-buy-now" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
-                <FiMessageSquare /> Chat voi nha cung cap
+              <Link to={`/messages?vendor=${encodeURIComponent(vendorId)}&name=${encodeURIComponent(vendorName)}`} className="btn-buy-now" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '6px', color: '#fff' }}>
+                <FiMessageSquare style={{ color: '#fff' }} /> Chat voi nha cung cap
               </Link>
             ) : null}
-            <button className="btn-buy-now">Mua ngay</button>
+            <button className="btn-buy-now" onClick={handleBuyNow}>Mua ngay</button>
           </div>
 
           <div className="pd-policy">
@@ -215,41 +332,136 @@ const ProductDetail = () => {
         </div>
       </div>
 
-      {/* --- PHẦN 2: MÔ TẢ & THÔNG SỐ --- */}
-      <div className="pd-bottom-section">
-        <div className="pd-description">
-            <div className="desc-header">MÔ TẢ SẢN PHẨM</div>
-            <div className={`desc-content ${isExpanded ? 'expanded' : ''}`}>
-                <div className="toc-box">
-                    <h3>📖 Mục lục</h3>
-                    <ol>
-                        <li>{product.name} là gì?</li>
-                        <li>Nguồn gốc, đặc điểm</li>
-                        <li>Giá trị dinh dưỡng</li>
-                        <li>Cách chế biến</li>
-                    </ol>
-                </div>
-                <h3>1. {product.name} là gì?</h3>
-                <p>{product.desc}</p>
-                <p>Sản phẩm được trồng theo tiêu chuẩn VietGAP, đảm bảo an toàn vệ sinh thực phẩm.</p>
-                <h3>2. Giá trị dinh dưỡng</h3>
-                <p>Cung cấp nhiều chất xơ, vitamin và khoáng chất thiết yếu cho cơ thể.</p>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit...</p>
-            </div>
-            <button className="btn-toggle-desc" onClick={() => setIsExpanded(!isExpanded)}>
-                {isExpanded ? 'Thu gọn ▲' : 'Xem thêm ▼'}
-            </button>
+      {/* --- PHẦN 2: MÔ TẢ & ĐÁNH GIÁ --- */}
+      <div className="pd-tabs-section">
+        <div className="pd-tabs-header">
+          <button
+            className={`tab-btn ${activeTab === 'description' ? 'active' : ''}`}
+            onClick={() => setActiveTab('description')}
+          >
+            Mô tả sản phẩm
+          </button>
+          <button
+            className={`tab-btn ${activeTab === 'reviews' ? 'active' : ''}`}
+            onClick={() => setActiveTab('reviews')}
+          >
+            Đánh giá ({reviews.length})
+          </button>
         </div>
 
-        <div className="pd-sidebar">
-            <div className="sidebar-header">THÔNG TIN CHI TIẾT</div>
-            <table className="specs-table">
-                <tbody>
-                    <tr><td>Trọng lượng</td><td>{selectedType}</td></tr>
-                    <tr><td>Xuất xứ</td><td>Việt Nam</td></tr>
-                    <tr><td>Bảo quản</td><td>Tủ lạnh</td></tr>
-                </tbody>
-            </table>
+        <div className="pd-tabs-content">
+          {activeTab === 'description' && (
+            <div className="pd-bottom-section">
+              <div className="pd-description">
+                  <div className="desc-header">MÔ TẢ SẢN PHẨM</div>
+                  <div className={`desc-content ${isExpanded ? 'expanded' : ''}`}>
+                      {hasDescription ? (
+                        descriptionParagraphs.map((paragraph, index) => (
+                          <p key={`${product.id}-desc-${index}`}>{paragraph}</p>
+                        ))
+                      ) : (
+                        <p>Chưa có mô tả chi tiết cho sản phẩm này.</p>
+                      )}
+                  </div>
+                  {canExpandDescription ? (
+                    <button className="btn-toggle-desc" onClick={() => setIsExpanded(!isExpanded)}>
+                        {isExpanded ? 'Thu gọn ▲' : 'Xem thêm ▼'}
+                    </button>
+                  ) : null}
+              </div>
+
+              <div className="pd-sidebar">
+                  <div className="sidebar-header">THÔNG TIN CHI TIẾT</div>
+                  <table className="specs-table">
+                      <tbody>
+                          <tr><td>Trọng lượng</td><td>{selectedType}</td></tr>
+                          <tr><td>Xuất xứ</td><td>Việt Nam</td></tr>
+                          <tr><td>Bảo quản</td><td>Tủ lạnh</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'reviews' && (
+            <div className="pd-reviews-section">
+              <div className="reviews-list">
+                {isLoadingReviews ? (
+                  <div className="review-item">Đang tải đánh giá...</div>
+                ) : reviews.length === 0 ? (
+                  <div className="review-item">Chưa có đánh giá nào cho sản phẩm này.</div>
+                ) : reviews.map((review) => (
+                  <div key={review.id} className="review-item">
+                    <div className="review-header">
+                      <div className="review-user-info">
+                        <div className="review-avatar">{review.user.charAt(0)}</div>
+                        <div>
+                          <span className="review-user">{review.user}</span>
+                          <span className="review-date">{review.date}</span>
+                        </div>
+                      </div>
+                      <div className="review-rating">
+                        {[...Array(5)].map((_, i) => (
+                          <FiStar key={i} className={`star-icon ${i < review.rating ? 'filled' : ''}`} />
+                        ))}
+                      </div>
+                    </div>
+                    <p className="review-comment">{review.comment}</p>
+                    {review.image ? <img src={review.image} alt="Review" className="review-image" /> : null}
+                  </div>
+                ))}
+              </div>
+
+              <div className="review-form-container">
+                <h3>Viết đánh giá của bạn</h3>
+                {canRate ? (
+                  <form onSubmit={handleReviewSubmit} className="review-form">
+                    <div className="form-group">
+                      <label>Đánh giá:</label>
+                      <div className="rating-select">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <FiStar
+                            key={star}
+                            className={`star-icon ${star <= newReview.rating ? 'filled' : ''} interactive`}
+                            onClick={() => setNewReview({ ...newReview, rating: star })}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label>Nhận xét:</label>
+                      <textarea
+                        value={newReview.comment}
+                        onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                        placeholder="Chia sẻ cảm nhận của bạn về sản phẩm..."
+                        rows="4"
+                        required
+                      ></textarea>
+                    </div>
+                    <div className="form-group">
+                      <label>Ảnh thực tế (tùy chọn):</label>
+                      <input type="file" accept="image/*" onChange={handleReviewImageChange} />
+                      {newReview.imagePreview ? (
+                        <img src={newReview.imagePreview} alt="Preview" className="review-image preview" />
+                      ) : null}
+                    </div>
+                    <button type="submit" className="btn-submit-review" disabled={isSubmittingReview}>
+                      {isSubmittingReview ? 'Đang gửi...' : 'Gửi đánh giá'}
+                    </button>
+                  </form>
+                ) : (
+                  <div className="review-gate-message">
+                    {ratingGateMessage}
+                    {!getStoredUser() ? (
+                      <span>
+                        {' '}<Link to="/login">Đăng nhập ngay</Link>
+                      </span>
+                    ) : null}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

@@ -138,3 +138,75 @@
 .voucher-actions .voucher-action + .voucher-action {
   border-top: 1px solid #ececec;
 }
+
+.gift-voucher-builder {
+  background: #fff;
+  border-radius: 10px;
+  padding: 18px;
+  border: 1px solid #e7efe2;
+  margin-bottom: 8px;
+}
+
+.gift-row {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.gift-row label {
+  font-size: 14px;
+  color: #3f4d3a;
+  font-weight: 600;
+}
+
+.gift-row input,
+.gift-row select {
+  width: 100%;
+  border: 1px solid #d9e6cf;
+  border-radius: 8px;
+  padding: 10px 12px;
+  outline: none;
+}
+
+.gift-buy-btn {
+  border: none;
+  border-radius: 8px;
+  background: #2e7d32;
+  color: #fff;
+  padding: 10px 14px;
+  font-weight: 700;
+}
+
+.gift-buy-btn:disabled {
+  opacity: 0.7;
+}
+
+.gift-created-box {
+  margin-top: 12px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  background: #f2f8ec;
+  border: 1px solid #dcead1;
+  border-radius: 8px;
+  padding: 10px 12px;
+}
+
+.gift-copy-btn {
+  border: 1px solid #2e7d32;
+  color: #2e7d32;
+  background: #fff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .gift-row {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+}

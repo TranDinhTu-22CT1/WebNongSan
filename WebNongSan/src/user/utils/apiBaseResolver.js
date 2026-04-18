@@ -7,18 +7,23 @@ const normalizeOrigin = (value) => {
   return value.replace(/\/+$/, '');
 };
 
-const parseFallbackPorts = () => {
-  const defaults = ['8080', '8000', '8888'];
-  const raw = import.meta.env.VITE_API_FALLBACK_PORTS || '';
+const hasExplicitPort = (origin) => {
+  if (!origin || typeof origin !== 'string') return false;
+  try {
+    return new URL(origin).port !== '';
+  } catch {
+    return false;
+  }
+};
 
-  if (!raw || typeof raw !== 'string') return defaults;
+const isLocalLikeHostname = (hostname) => {
+  const host = String(hostname || '').toLowerCase();
+  return host === 'localhost' || host === '127.0.0.1' || host === '[::1]';
+};
 
-  const parsed = raw
-    .split(',')
-    .map((item) => item.trim())
-    .filter((item) => /^\d{2,5}$/.test(item));
-
-  return parsed.length ? [...new Set(parsed)] : defaults;
+const isApiPathname = (pathname) => {
+  if (!pathname || typeof pathname !== 'string') return false;
+  return pathname === API_PREFIX || pathname.startsWith(`${API_PREFIX}/`);
 };
 
 const buildCandidateOrigins = () => {
@@ -30,32 +35,29 @@ const buildCandidateOrigins = () => {
   const host = window.location.hostname || 'localhost';
   const currentOrigin = normalizeOrigin(window.location.origin || '');
   const proto = window.location.protocol === 'https:' ? 'https:' : 'http:';
-  const fallbackPorts = parseFallbackPorts();
   const isApiBaseAbsolute = /^https?:\/\//i.test(envApiBase);
   const apiBaseOrigin = isApiBaseAbsolute
     ? normalizeOrigin(new URL(envApiBase).origin)
     : '';
 
-  const hostCandidates = fallbackPorts.flatMap((port) => [
-    `http://${host}:${port}`,
-    `http://localhost:${port}`,
-    `http://127.0.0.1:${port}`,
-  ]);
+  const pinnedEnvCandidates = [envOrigin, envProxyTarget, apiBaseOrigin].filter(
+    (origin) => hasExplicitPort(origin),
+  );
+
+  const nonPinnedEnvCandidates = [envOrigin, envProxyTarget, apiBaseOrigin].filter(
+    (origin) => origin && !hasExplicitPort(origin),
+  );
 
   const candidates = [
-    envOrigin,
-    envProxyTarget,
-    apiBaseOrigin,
+    ...pinnedEnvCandidates,
     cachedOrigin,
-    currentOrigin,
+    ...nonPinnedEnvCandidates,
     `${proto}//${host}`,
     `http://${host}`,
-    `https://${host}:4433`,
     'http://localhost',
-    'https://localhost:4433',
     'http://127.0.0.1',
-    'https://127.0.0.1:4433',
-    ...hostCandidates,
+    // Keep currentOrigin late in the list to avoid false positives through Vite proxy.
+    currentOrigin,
   ].filter(Boolean);
 
   return [...new Set(candidates)];
@@ -90,7 +92,12 @@ const probeOrigin = async (origin, nativeFetch) => {
 const resolveApiOrigin = (() => {
   let resolvingPromise = null;
 
-  return (nativeFetch) => {
+  return (nativeFetch, { forceRefresh = false } = {}) => {
+    if (forceRefresh) {
+      localStorage.removeItem(CACHE_KEY);
+      resolvingPromise = null;
+    }
+
     if (resolvingPromise) return resolvingPromise;
 
     resolvingPromise = (async () => {
@@ -113,12 +120,26 @@ const resolveApiOrigin = (() => {
 })();
 
 const shouldRewriteUrl = (input) => {
-  if (typeof input === 'string') return input.startsWith(API_PREFIX);
-  if (input instanceof URL) return input.pathname.startsWith(API_PREFIX);
+  if (typeof input === 'string') {
+    if (input.startsWith(API_PREFIX)) return true;
+
+    try {
+      const parsed = new URL(input, window.location.origin);
+      return isApiPathname(parsed.pathname) && isLocalLikeHostname(parsed.hostname);
+    } catch {
+      return false;
+    }
+  }
+
+  if (input instanceof URL) {
+    return isApiPathname(input.pathname) && isLocalLikeHostname(input.hostname);
+  }
+
   if (typeof Request !== 'undefined' && input instanceof Request) {
     const parsed = new URL(input.url, window.location.origin);
-    return parsed.pathname.startsWith(API_PREFIX);
+    return isApiPathname(parsed.pathname) && isLocalLikeHostname(parsed.hostname);
   }
+
   return false;
 };
 
@@ -126,10 +147,21 @@ const rewriteUrl = (input, origin) => {
   if (!origin) return input;
 
   if (typeof input === 'string') {
-    return `${origin}${input}`;
+    if (input.startsWith(API_PREFIX)) return `${origin}${input}`;
+
+    try {
+      const parsed = new URL(input, window.location.origin);
+      if (isApiPathname(parsed.pathname)) {
+        return `${origin}${parsed.pathname}${parsed.search}`;
+      }
+      return input;
+    } catch {
+      return input;
+    }
   }
 
   if (input instanceof URL) {
+    if (!isApiPathname(input.pathname)) return input;
     return new URL(`${origin}${input.pathname}${input.search}`);
   }
 
@@ -140,6 +172,11 @@ const rewriteUrl = (input, origin) => {
   }
 
   return input;
+};
+
+const shouldRetryWithRefreshedOrigin = (response) => {
+  if (!response) return false;
+  return [404, 502, 503, 504].includes(response.status);
 };
 
 export const installApiFetchAdapter = () => {
@@ -155,7 +192,21 @@ export const installApiFetchAdapter = () => {
 
     const origin = await resolveApiOrigin(nativeFetch);
     const rewritten = rewriteUrl(input, origin);
-    return nativeFetch(rewritten, init);
+
+    try {
+      const response = await nativeFetch(rewritten, init);
+      if (!response.ok && shouldRetryWithRefreshedOrigin(response)) {
+        const refreshedOrigin = await resolveApiOrigin(nativeFetch, { forceRefresh: true });
+        const refreshedUrl = rewriteUrl(input, refreshedOrigin);
+        return nativeFetch(refreshedUrl, init);
+      }
+      return response;
+    } catch {
+      // If chosen origin becomes unreachable, clear cache and re-probe once.
+      const refreshedOrigin = await resolveApiOrigin(nativeFetch, { forceRefresh: true });
+      const refreshedUrl = rewriteUrl(input, refreshedOrigin);
+      return nativeFetch(refreshedUrl, init);
+    }
   };
 
   window.__apiFetchAdapterInstalled = true;

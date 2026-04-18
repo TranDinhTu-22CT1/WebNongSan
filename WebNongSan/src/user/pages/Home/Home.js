@@ -1,14 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../../store/CartContext';
-import { productsAPI } from '../../api/apiClient';
+import { bannersAPI, productsAPI } from '../../api/apiClient';
 import Services from './Services';
 import { FiArrowRight, FiShoppingBag, FiStar, FiTrendingUp } from 'react-icons/fi';
 import './Home.css';
 
+const normalizeCategoryName = (value = '') => (
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .trim()
+);
+
+const categoryImageRules = [
+  {
+    keywords: ['do uong', 'nuoc ep', 'thuc uong', 'beverage', 'drink', 'tea', 'tra'],
+    image: 'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=150&q=80'
+  },
+  {
+    keywords: ['tuoi song', 'thit', 'hai san', 'seafood', 'meat', 'fresh'],
+    image: 'https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=150&q=80'
+  },
+  {
+    keywords: ['rau cu', 'rau', 'vegetable', 'veggie'],
+    image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=150&q=80'
+  },
+  {
+    keywords: ['trai cay', 'hoa qua', 'fruit'],
+    image: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=150&q=80'
+  },
+  {
+    keywords: ['gia vi', 'spice', 'seasoning'],
+    image: 'https://images.unsplash.com/photo-1502741338009-cac2772e18bc?auto=format&fit=crop&w=150&q=80'
+  },
+  {
+    keywords: ['trung', 'bo', 'egg', 'butter'],
+    image: 'https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=150&q=80'
+  },
+  {
+    keywords: ['thuc pham kho', 'ngu coc', 'hat', 'grain', 'dry food'],
+    image: 'https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=150&q=80'
+  }
+];
+
+const getCategoryImage = (categoryName, fallbackImage) => {
+  const normalizedName = normalizeCategoryName(categoryName);
+  const matchedRule = categoryImageRules.find(({ keywords }) => (
+    keywords.some((keyword) => normalizedName.includes(keyword))
+  ));
+
+  return matchedRule?.image || fallbackImage || 'https://via.placeholder.com/150?text=Category';
+};
+
 const Home = () => {
   const { addToCart } = useCart();
   const [dbProducts, setDbProducts] = useState([]);
+  const [bannerData, setBannerData] = useState({ system: [], promo: [] });
   const [loading, setLoading] = useState(true);
 
   // Fetch products from backend
@@ -16,11 +65,16 @@ const Home = () => {
     const fetchProducts = async () => {
       try {
         setLoading(true);
-        const data = await productsAPI.getAll();
+        const [data, banners] = await Promise.all([
+          productsAPI.getAll(),
+          bannersAPI.getAll().catch(() => ({ system: [], promo: [] })),
+        ]);
         setDbProducts(Array.isArray(data) ? data : []);
+        setBannerData(banners);
       } catch (err) {
         console.error('Failed to fetch products:', err);
         setDbProducts([]);
+        setBannerData({ system: [], promo: [] });
       } finally {
         setLoading(false);
       }
@@ -30,7 +84,7 @@ const Home = () => {
   }, []);
 
   // --- LOGIC BANNER TRƯỢT ---
-  const bannerImages = [
+  const fallbackHeroBanners = [
     {
       url: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1920&q=80",
       title: "AgriMarket - Tươi Sạch 100%",
@@ -47,6 +101,25 @@ const Home = () => {
       subtitle: "Bảo vệ sức khỏe gia đình với nguồn thực phẩm an toàn."
     }
   ];
+  const promoHeroBanners = [...bannerData.promo]
+    .sort((left, right) => left.position - right.position)
+    .filter((item) => item.image_path)
+    .map((item, index) => ({
+      url: item.image_path,
+      title: item.title?.trim() || item.note?.trim() || `Uu dai nong san #${index + 1}`,
+      subtitle: item.subtitle?.trim() || 'San pham tuoi ngon moi ngay tai AgriMarket.',
+    }));
+
+  const heroBannerImage = bannerData.system.find((item) => item.banner_key === 'user_hero')?.image_path || '';
+  const bannerImages = promoHeroBanners.length > 0
+    ? promoHeroBanners
+    : (heroBannerImage
+      ? [{
+          url: heroBannerImage,
+          title: 'AgriMarket - Tuoi sach moi ngay',
+          subtitle: 'Mang huong vi thien nhien tu nong trai den ban an gia dinh ban.',
+        }]
+      : fallbackHeroBanners);
   const [currentBanner, setCurrentBanner] = useState(0);
 
   useEffect(() => {
@@ -54,30 +127,54 @@ const Home = () => {
       setCurrentBanner((prev) => (prev + 1) % bannerImages.length);
     }, 5000);
     return () => clearInterval(interval);
-  }, []);
+  }, [bannerImages.length]);
+
+  const promoCards = [
+    {
+      key: 1,
+      themeClass: 'promo-green',
+      tag: 'Hữu cơ 100%',
+      title: 'Rau củ quả tươi sạch mỗi ngày',
+      description: 'Giảm ngay 20% cho đơn hàng đầu tiên',
+      image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80',
+    },
+    {
+      key: 2,
+      themeClass: 'promo-orange',
+      tag: 'Giải khát mùa hè',
+      title: 'Nước ép trái cây nguyên chất',
+      description: 'Combo 3 chai chỉ từ 99.000đ',
+      image: 'https://images.unsplash.com/photo-1613478223719-2ab802602423?auto=format&fit=crop&w=600&q=80',
+    },
+  ].map((card, index) => {
+    const apiBanner = [...bannerData.promo]
+      .sort((left, right) => left.position - right.position)[index];
+
+    if (!apiBanner?.image_path) {
+      return card;
+    }
+
+    return {
+      ...card,
+      image: apiBanner.image_path,
+      description: apiBanner.note || card.description,
+    };
+  });
 
   // --- GENERATE CATEGORIES FROM DB PRODUCTS ---
   const generateCategoriesFromDB = () => {
     const categoryMap = new Map();
     const categoryColors = ['bg-green', 'bg-red', 'bg-yellow', 'bg-purple', 'bg-orange', 'bg-blue', 'bg-teal', 'bg-pink'];
-    const categoryImages = [
-      "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?auto=format&fit=crop&w=150&q=80",
-      "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?auto=format&fit=crop&w=150&q=80",
-      "https://images.unsplash.com/photo-1506084868230-bb9d95c24759?auto=format&fit=crop&w=150&q=80",
-      "https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=150&q=80",
-      "https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=150&q=80",
-      "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=150&q=80",
-      "https://images.unsplash.com/photo-1615141982883-c7ad0e69fd62?auto=format&fit=crop&w=150&q=80",
-      "https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=150&q=80"
-    ];
-    
-    dbProducts.forEach((product, index) => {
+
+    dbProducts.forEach((product) => {
       const cat = product.category;
       if (cat && !categoryMap.has(cat)) {
+        const fallbackImage = product.image || product.images?.[0];
+
         categoryMap.set(cat, {
           id: categoryMap.size + 1,
           name: cat,
-          img: categoryImages[categoryMap.size % categoryImages.length],
+          img: getCategoryImage(cat, fallbackImage),
           color: categoryColors[categoryMap.size % categoryColors.length]
         });
       }
@@ -247,24 +344,24 @@ const Home = () => {
 
         {/* 4. BANNERS ĐÔI */}
         <div className="promo-banners">
-          <div className="promo-card promo-green">
+          <div className={`promo-card ${promoCards[0].themeClass}`}>
             <div className="promo-content">
-              <span className="promo-tag">Hữu cơ 100%</span>
-              <h3>Rau củ quả tươi sạch mỗi ngày</h3>
-              <p>Giảm ngay 20% cho đơn hàng đầu tiên</p>
+              <span className="promo-tag">{promoCards[0].tag}</span>
+              <h3>{promoCards[0].title}</h3>
+              <p>{promoCards[0].description}</p>
               <Link to="/shop" className="promo-btn">Mua ngay <FiArrowRight /></Link>
             </div>
-            <div className="promo-img-bg" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=600&q=80')" }}></div>
+            <div className="promo-img-bg" style={{ backgroundImage: `url(${promoCards[0].image})` }}></div>
           </div>
           
-          <div className="promo-card promo-orange">
+          <div className={`promo-card ${promoCards[1].themeClass}`}>
             <div className="promo-content">
-              <span className="promo-tag">Giải khát mùa hè</span>
-              <h3>Nước ép trái cây nguyên chất</h3>
-              <p>Combo 3 chai chỉ từ 99.000đ</p>
+              <span className="promo-tag">{promoCards[1].tag}</span>
+              <h3>{promoCards[1].title}</h3>
+              <p>{promoCards[1].description}</p>
               <Link to="/shop" className="promo-btn">Mua ngay <FiArrowRight /></Link>
             </div>
-            <div className="promo-img-bg" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80')" }}></div>
+            <div className="promo-img-bg" style={{ backgroundImage: `url(${promoCards[1].image})` }}></div>
           </div>
         </div>
 
