@@ -1,9 +1,12 @@
 <?php
 //message.php
 include_once './config/database.php';
+<<<<<<< HEAD
 include_once './utils/jwt_helper.php';
 require_once './helpers/audit_log.php';
 require_once './helpers/rate_limit.php';
+=======
+>>>>>>> DaiVan
 header('Content-Type: application/json');
 
 $action = isset($_GET['action']) ? $_GET['action'] : (isset($_POST['action']) ? $_POST['action'] : '');
@@ -14,6 +17,7 @@ if (empty($action)) {
 }
 
 try {
+<<<<<<< HEAD
     $getAuthUser = function() {
         $headers = function_exists('getallheaders') ? getallheaders() : [];
         $authHeader = '';
@@ -473,6 +477,11 @@ try {
                 exit;
             }
 
+=======
+    switch ($action) {
+        case 'get_conversations':
+            $user_id = $_GET['user_id'];
+>>>>>>> DaiVan
             $sql = "SELECT c.id, u.id as partner_id, u.name, u.avatar, c.last_message as lastMessage, c.last_time as time,
                     (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND m.receiver_id = :uid AND m.is_read = 0) as unread
                     FROM conversations c
@@ -484,6 +493,7 @@ try {
             break;
 
         case 'get_messages':
+<<<<<<< HEAD
             $authUser = $getAuthUser();
             $cid = (int)($_GET['conversation_id'] ?? 0);
             $uid = (int)($_GET['user_id'] ?? 0);
@@ -492,6 +502,10 @@ try {
                 echo json_encode(["status" => "error", "message" => "Unauthorized"]);
                 exit;
             }
+=======
+            $cid = $_GET['conversation_id'];
+            $uid = $_GET['user_id'];
+>>>>>>> DaiVan
             
             // BẢO MẬT: Kiểm tra xem user có thực sự thuộc về cuộc hội thoại này không
             $check_sql = "SELECT id FROM conversations WHERE id = :cid AND (user_one = :uid OR user_two = :uid)";
@@ -518,6 +532,7 @@ try {
             break;
 
         case 'send_message':
+<<<<<<< HEAD
             $authUser = $getAuthUser();
             if (!$authUser || empty($authUser->id)) {
                 echo json_encode(["status" => "error", "message" => "Unauthorized"]);
@@ -556,6 +571,12 @@ try {
                 exit;
             }
 
+=======
+            $cid = $_POST['conversation_id']; 
+            $sid = $_POST['sender_id'];
+            $rid = $_POST['receiver_id'];
+            $text = isset($_POST['text']) ? $_POST['text'] : '';
+>>>>>>> DaiVan
             $uploaded_files = [];
             $final_type = 'text';
 
@@ -590,6 +611,7 @@ try {
                 }
             }
 
+<<<<<<< HEAD
             if (!empty($cid) && strpos((string)$cid, 'new_') !== 0) {
                 $validateConv = $conn->prepare("SELECT id FROM conversations WHERE id = :cid AND ((user_one = :sid AND user_two = :rid) OR (user_one = :rid AND user_two = :sid))");
                 $validateConv->execute([
@@ -602,6 +624,8 @@ try {
                 }
             }
 
+=======
+>>>>>>> DaiVan
             $media_json = !empty($uploaded_files) ? json_encode($uploaded_files) : null;
             
             $stmt = $conn->prepare("INSERT INTO messages (conversation_id, sender_id, receiver_id, message_text, media_url, message_type, is_read) VALUES (?, ?, ?, ?, ?, ?, 0)");

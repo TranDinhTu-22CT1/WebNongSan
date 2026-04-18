@@ -4,8 +4,11 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Authorization");
 header('Content-Type: application/json; charset=utf-8');
+<<<<<<< HEAD
 require_once __DIR__ . '/utils/jwt_helper.php';
 require_once __DIR__ . '/../utils/order_helpers.php';
+=======
+>>>>>>> DaiVan
 
 // Xử lý preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
@@ -52,6 +55,7 @@ $reactToStatus = [
     'Cancelled' => 'Đã hủy'
 ];
 
+<<<<<<< HEAD
 function ensureUserNotificationsTable($pdo) {
     $sql = "CREATE TABLE IF NOT EXISTS user_notifications (
                 id INT NOT NULL AUTO_INCREMENT,
@@ -113,12 +117,15 @@ function ensurePurchasedVouchersTableForOrders($pdo) {
 ensureUserNotificationsTable($pdo);
 ensurePurchasedVouchersTableForOrders($pdo);
 
+=======
+>>>>>>> DaiVan
 // ==========================================
 // 2. XỬ LÝ CÁC ROUTE (ACTIONS)
 // ==========================================
 
 switch ($action) {
 
+<<<<<<< HEAD
     // --- TẠO ĐƠN HÀNG TỪ CHECKOUT ---
     case 'create_order':
         $headers = function_exists('getallheaders') ? getallheaders() : [];
@@ -484,6 +491,8 @@ switch ($action) {
         }
         break;
 
+=======
+>>>>>>> DaiVan
     // --- LẤY DANH SÁCH ĐƠN HÀNG ---
     case 'list_orders':
         try {
@@ -522,7 +531,11 @@ switch ($action) {
             }, $rawOrders);
             
             echo json_encode(['status' => 'success', 'data' => $orders]);
+<<<<<<< HEAD
         } catch (Exception $e) {
+=======
+        } catch (PDOException $e) {
+>>>>>>> DaiVan
             echo json_encode(['status' => 'error', 'message' => 'Lỗi DB: ' . $e->getMessage()]);
         }
         break;
@@ -547,6 +560,7 @@ switch ($action) {
             $sql = "UPDATE orders SET delivery_status = ? WHERE id = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$db_status, $db_id]);
+<<<<<<< HEAD
 
             $orderInfoStmt = $pdo->prepare("SELECT customer_id, order_code FROM orders WHERE id = ? LIMIT 1");
             $orderInfoStmt->execute([$db_id]);
@@ -570,6 +584,11 @@ switch ($action) {
             
             echo json_encode(['status' => 'success', 'message' => 'Cập nhật trạng thái thành công!']);
         } catch (Exception $e) {
+=======
+            
+            echo json_encode(['status' => 'success', 'message' => 'Cập nhật trạng thái thành công!']);
+        } catch (PDOException $e) {
+>>>>>>> DaiVan
             echo json_encode(['status' => 'error', 'message' => 'Lỗi DB: ' . $e->getMessage()]);
         }
         break;
@@ -593,6 +612,7 @@ switch ($action) {
                     WHERE id = ?";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$reason, $db_id]);
+<<<<<<< HEAD
 
             $orderInfoStmt = $pdo->prepare("SELECT customer_id, order_code FROM orders WHERE id = ? LIMIT 1");
             $orderInfoStmt->execute([$db_id]);
@@ -607,6 +627,8 @@ switch ($action) {
                     ['order_id' => (int)$db_id, 'order_code' => (string)$orderInfo['order_code']]
                 );
             }
+=======
+>>>>>>> DaiVan
             
             echo json_encode(['status' => 'success', 'message' => 'Đã hủy đơn hàng thành công!']);
         } catch (PDOException $e) {

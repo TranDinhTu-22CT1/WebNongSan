@@ -5,8 +5,11 @@ header("Content-Type: application/json; charset=UTF-8");
 header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
+<<<<<<< HEAD
 include_once './utils/jwt_helper.php';
 
+=======
+>>>>>>> DaiVan
 // Xử lý preflight request của CORS
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     http_response_code(200);
@@ -42,6 +45,7 @@ function getUserIdByName($conn, $adminName) {
     return $user ? (int)$user['id'] : null;
 }
 
+<<<<<<< HEAD
 function getAuthUser() {
     $headers = function_exists('getallheaders') ? getallheaders() : [];
     $authHeader = '';
@@ -108,10 +112,13 @@ function parseNotificationIdentity($rawId, $sourceHint = '') {
     return [$source, $sourceId];
 }
 
+=======
+>>>>>>> DaiVan
 // 2. ĐỊNH TUYẾN CHỨC NĂNG (ROUTING)
 $action = isset($_GET['action']) ? $_GET['action'] : 'list';
 
 try {
+<<<<<<< HEAD
     ensureNotificationReadTable($conn);
     ensureUserNotificationsTable($conn);
 
@@ -230,6 +237,9 @@ try {
             echo json_encode(["status" => "success", "message" => "Da danh dau tat ca da doc."]);
             break;
 
+=======
+    switch ($action) {
+>>>>>>> DaiVan
         case 'list':
             $sql = "SELECT * FROM admin_notifications ORDER BY created_at DESC";
             $stmt = $conn->prepare($sql);

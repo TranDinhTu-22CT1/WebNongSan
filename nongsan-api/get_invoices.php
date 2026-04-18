@@ -4,6 +4,7 @@ include_once './utils/jwt_helper.php';
 
 header('Content-Type: application/json');
 
+<<<<<<< HEAD
 // 1. Kiểm tra Token (hỗ trợ nhiều kiểu server trả Authorization header)
 $headers = function_exists('getallheaders') ? getallheaders() : [];
 $authHeader = '';
@@ -19,6 +20,12 @@ if (isset($headers['Authorization'])) {
 }
 
 $token = trim(preg_replace('/^Bearer\s+/i', '', (string)$authHeader));
+=======
+// 1. Kiểm tra Token
+$headers = getallheaders();
+$authHeader = $headers['Authorization'] ?? '';
+$token = str_replace('Bearer ', '', $authHeader);
+>>>>>>> DaiVan
 $user = JWT_Helper::validate($token);
 
 if (!$user) {
@@ -27,7 +34,11 @@ if (!$user) {
 }
 
 $user_id = $user->id;
+<<<<<<< HEAD
 $role = strtolower(trim((string)($user->role ?? '')));
+=======
+$role = $user->role;
+>>>>>>> DaiVan
 
 try {
     // 2. Lấy trực tiếp customer_name từ bảng orders (o.customer_name)
@@ -36,14 +47,22 @@ try {
     
     if ($role === 'vendor') {
         $sql .= " WHERE o.vendor_id = :uid";
+<<<<<<< HEAD
     } elseif ($role === 'customer' || $role === 'user') {
+=======
+    } elseif ($role === 'customer') {
+>>>>>>> DaiVan
         $sql .= " WHERE o.customer_id = :uid";
     }
 
     $sql .= " ORDER BY o.created_at DESC";
 
     $stmt = $conn->prepare($sql);
+<<<<<<< HEAD
     if ($role !== 'admin' && ($role === 'vendor' || $role === 'customer' || $role === 'user')) {
+=======
+    if ($role !== 'admin') {
+>>>>>>> DaiVan
         $stmt->bindParam(':uid', $user_id);
     }
     $stmt->execute();

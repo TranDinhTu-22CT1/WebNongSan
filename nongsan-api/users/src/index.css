@@ -1,0 +1,23 @@
+
+:root {
+  --primary-color: #82ae46; 
+  --text-color: #000000;
+  --light-bg: #f7f6f2;
+}
+
+body {
+  font-family: 'Poppins', sans-serif; 
+  background-color: var(--light-bg);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+#root {
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}

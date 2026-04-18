@@ -2,6 +2,7 @@
 // Cho phép CORS để React (chạy port khác, vd 3000) có thể gọi được API
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+<<<<<<< HEAD
 
 $requestedHeaders = $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] ?? '';
 $allowHeaders = trim((string)$requestedHeaders) !== ''
@@ -22,6 +23,11 @@ require './PHPMailer/SMTP.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
+=======
+header("Access-Control-Allow-Headers: Content-Type");
+header('Content-Type: application/json; charset=utf-8');
+
+>>>>>>> DaiVan
 // Xử lý preflight request của trình duyệt
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -53,11 +59,14 @@ if ($method === 'POST' && isset($postData['action'])) {
     $action = $postData['action'];
 }
 
+<<<<<<< HEAD
 $publicActions = ['forgot_password_init', 'verify_reset_otp', 'reset_password'];
 if (!in_array($action, $publicActions, true)) {
     require_auth(['admin']);
 }
 
+=======
+>>>>>>> DaiVan
 // ==========================================
 // 2. XỬ LÝ CÁC ROUTE (ACTIONS)
 // ==========================================
@@ -162,6 +171,7 @@ switch ($action) {
         }
         break;
 
+<<<<<<< HEAD
     // --- XÓA TÀI KHOẢN KHÁCH HÀNG ---
     case 'delete_customer':
         $id = isset($postData['id']) ? (int)$postData['id'] : 0;
@@ -414,6 +424,8 @@ switch ($action) {
         }
         break;
 
+=======
+>>>>>>> DaiVan
     // --- XỬ LÝ TRANH CHẤP / HOÀN TIỀN ---
     case 'handle_dispute':
         $orderCode = $postData['order_code'] ?? null; 

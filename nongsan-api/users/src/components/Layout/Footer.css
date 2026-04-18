@@ -1,0 +1,56 @@
+.footer-container {
+  background-color: #1b5e20; /* Xanh đậm hơn Header */
+  color: white;
+  padding: 40px 20px 20px;
+  margin-top: auto; /* Đẩy xuống đáy */
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 30px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.footer-section h3 {
+  font-size: 18px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #4caf50;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+.footer-section p, .footer-section ul li {
+  font-size: 14px;
+  line-height: 1.6;
+  color: #e8f5e9;
+}
+
+.footer-section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-section ul li a {
+  text-decoration: none;
+  color: #e8f5e9;
+  transition: color 0.3s;
+}
+
+.footer-section ul li a:hover {
+  color: #ffeb3b; /* Màu vàng khi hover */
+}
+
+.social-icons {
+  display: flex;
+  gap: 10px;
+}
+
+.copyright {
+  text-align: center;
+  margin-top: 30px;
+  padding-top: 20px;
+  border-top: 1px solid #388e3c;
+  font-size: 13px;
+}

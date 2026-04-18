@@ -2,6 +2,7 @@
 // Cho phép CORS để React có thể gọi API
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+<<<<<<< HEAD
 
 $requestedHeaders = $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'] ?? '';
 $allowHeaders = trim((string)$requestedHeaders) !== ''
@@ -12,6 +13,11 @@ header('Content-Type: application/json; charset=utf-8');
 
 require_once './helpers/auth_guard.php';
 
+=======
+header("Access-Control-Allow-Headers: Content-Type");
+header('Content-Type: application/json; charset=utf-8');
+
+>>>>>>> DaiVan
 // Xử lý preflight request
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(200);
@@ -43,8 +49,11 @@ if ($method === 'POST' && isset($postData['action'])) {
     $action = $postData['action'];
 }
 
+<<<<<<< HEAD
 require_auth(['admin']);
 
+=======
+>>>>>>> DaiVan
 // ==========================================
 // 2. XỬ LÝ CÁC ROUTE (ACTIONS)
 // ==========================================

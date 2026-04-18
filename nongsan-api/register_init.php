@@ -1,7 +1,10 @@
 <?php
 include_once './config/database.php';
 include_once './utils/jwt_helper.php';
+<<<<<<< HEAD
 require_once './config/mail.php';
+=======
+>>>>>>> DaiVan
 
 // Import PHPMailer thủ công
 require './PHPMailer/Exception.php';
@@ -17,6 +20,7 @@ $data = json_decode(file_get_contents("php://input"));
 if(isset($data->name) && isset($data->email) && isset($data->password)) {
     $name = trim($data->name);
     $email = trim($data->email);
+<<<<<<< HEAD
     $requestedRole = strtolower(trim((string)($data->role ?? 'vendor')));
     $role = in_array($requestedRole, ['vendor', 'customer', 'user'], true) ? ($requestedRole === 'user' ? 'customer' : $requestedRole) : 'vendor';
 
@@ -33,6 +37,17 @@ if(isset($data->name) && isset($data->email) && isset($data->password)) {
 
     if($existingUser) {
         if ($role === 'vendor' && strcasecmp($existingUser['name'], $name) == 0 && $existingUser['name'] == $name) {
+=======
+
+    // 1. KIỂM TRA TRÙNG LẶP (CẢ TÊN VÀ EMAIL)
+    // Sử dụng BINARY nếu muốn 'Admin' khác 'admin' hoàn toàn trong MySQL
+    $check = $conn->prepare("SELECT name, email FROM users WHERE name = :name OR email = :email LIMIT 1");
+    $check->execute([':name' => $name, ':email' => $email]);
+    $existingUser = $check->fetch(PDO::FETCH_ASSOC);
+
+    if($existingUser) {
+        if (strcasecmp($existingUser['name'], $name) == 0 && $existingUser['name'] == $name) {
+>>>>>>> DaiVan
              // Nếu database của bạn là Case-Insensitive, admin và admin sẽ lọt vào đây
              echo json_encode(["status" => "error", "message" => "Tên người dùng '$name' này đã tồn tại, vui lòng chọn tên khác!"]);
              exit();
@@ -47,6 +62,7 @@ if(isset($data->name) && isset($data->email) && isset($data->password)) {
 
     // 3. Gửi Email
     $mail = new PHPMailer(true);
+<<<<<<< HEAD
     $mailConfig = get_mail_config();
     try {
         $mail->isSMTP();
@@ -66,6 +82,23 @@ if(isset($data->name) && isset($data->email) && isset($data->password)) {
         $mail->isHTML(true);
         $roleLabel = $role === 'vendor' ? 'Vendor' : 'Khách hàng';
         $mail->Subject = "Mã xác nhận đăng ký {$roleLabel}";
+=======
+    try {
+        $mail->isSMTP();
+        $mail->Host       = 'smtp.gmail.com'; 
+        $mail->SMTPAuth   = true;
+        $mail->Username   = 'tu0147258369@gmail.com'; 
+        $mail->Password   = 'tmmu yrcb fesb mtvq'; 
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port       = 587;
+        $mail->CharSet    = 'UTF-8'; // Đảm bảo tiếng Việt không lỗi
+
+        $mail->setFrom('no-reply@nongsan.com', 'Hệ Thống Nông Sản');
+        $mail->addAddress($email);
+
+        $mail->isHTML(true);
+        $mail->Subject = 'Mã xác nhận đăng ký Vendor';
+>>>>>>> DaiVan
         $mail->Body    = "
             <div style='font-family: Arial, sans-serif; border: 1px solid #eee; padding: 20px; border-radius: 10px;'>
                 <h2 style='color: #2eb85c;'>Xác thực đăng ký</h2>
@@ -79,7 +112,11 @@ if(isset($data->name) && isset($data->email) && isset($data->password)) {
 
         $mail->send();
         write_audit_log(
+<<<<<<< HEAD
     strtoupper($role) . " {$name} ({$email}) đã yêu cầu đăng ký – gửi OTP"
+=======
+    "VENDOR {$name} ({$email}) đã yêu cầu đăng ký – gửi OTP"
+>>>>>>> DaiVan
 );
         // 4. Tạo JWT - Ép kiểu STRING toàn bộ các trường quan trọng
         $password_hash = password_hash($data->password, PASSWORD_BCRYPT);
@@ -88,7 +125,11 @@ if(isset($data->name) && isset($data->email) && isset($data->password)) {
             'name'          => (string)$data->name,
             'email'         => (string)$email,
             'password_hash' => (string)$password_hash,
+<<<<<<< HEAD
             'role'          => $role,
+=======
+            'role'          => 'vendor',
+>>>>>>> DaiVan
             'otp'           => (string)$otp, // Ép kiểu chuỗi cực kỳ quan trọng
             'exp'           => time() + (60 * 10) // 10 phút
         ];

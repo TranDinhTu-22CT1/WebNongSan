@@ -27,6 +27,7 @@ try {
     exit;
 }
 
+<<<<<<< HEAD
 function upsertPromotionFromSale(PDO $pdo, array $saleRow)
 {
     $saleId = (int)($saleRow['id'] ?? 0);
@@ -77,6 +78,8 @@ function disablePromotionFromSale(PDO $pdo, int $saleId)
     $stmt->execute([$code]);
 }
 
+=======
+>>>>>>> DaiVan
 // Nhận action từ GET hoặc POST JSON
 $method = $_SERVER['REQUEST_METHOD'];
 $action = $_GET['action'] ?? '';
@@ -95,6 +98,7 @@ switch ($action) {
     // --- LẤY DANH SÁCH CHIẾN DỊCH KHUYẾN MÃI ---
     case 'list':
         try {
+<<<<<<< HEAD
             // Đồng bộ trạng thái theo end_date để bản ghi đã gia hạn được kích hoạt lại.
             $updateSql = "UPDATE sale
                           SET status = CASE
@@ -122,6 +126,12 @@ switch ($action) {
                 upsertPromotionFromSale($pdo, $row);
             }
 
+=======
+            // Tự động cập nhật trạng thái 'Expired' nếu ngày hiện tại đã vượt qua end_date
+            $updateSql = "UPDATE sale SET status = 'Expired' WHERE end_date < CURDATE() AND status = 'Active' AND deleted_at IS NULL";
+            $pdo->exec($updateSql);
+
+>>>>>>> DaiVan
             // Lấy danh sách
             $sql = "SELECT * FROM sale WHERE deleted_at IS NULL ORDER BY created_at DESC";
             $stmt = $pdo->prepare($sql);
@@ -159,9 +169,15 @@ switch ($action) {
         $name = $postData['name'] ?? '';
         $type = $postData['type'] ?? 'Flash Sale';
         $discountValue = isset($postData['discount']) ? (float)$postData['discount'] : 0;
+<<<<<<< HEAD
         $startDate = !empty($postData['start']) ? $postData['start'] : null;
         $endDate = !empty($postData['end']) ? $postData['end'] : null;
         $status = ($endDate !== null && $endDate < date('Y-m-d')) ? 'Expired' : 'Active';
+=======
+        $status = $postData['status'] ?? 'Active';
+        $startDate = !empty($postData['start']) ? $postData['start'] : null;
+        $endDate = !empty($postData['end']) ? $postData['end'] : null;
+>>>>>>> DaiVan
         
         // Mặc định tạo mới sẽ có lượt dùng bằng 0. usage_limit có thể thêm vào React form sau này, tạm thời để NULL
         $usageLimit = isset($postData['usageLimit']) && $postData['usageLimit'] !== '' ? (int)$postData['usageLimit'] : null;
@@ -176,6 +192,7 @@ switch ($action) {
                     VALUES (?, ?, ?, ?, ?, ?, 0, ?)";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$name, $type, $discountValue, $status, $startDate, $endDate, $usageLimit]);
+<<<<<<< HEAD
 
             $newSaleId = (int)$pdo->lastInsertId();
             if ($newSaleId > 0 && $type === 'Voucher') {
@@ -192,6 +209,8 @@ switch ($action) {
             } elseif ($newSaleId > 0) {
                 disablePromotionFromSale($pdo, $newSaleId);
             }
+=======
+>>>>>>> DaiVan
             
             echo json_encode(['status' => 'success', 'message' => 'Tạo chiến dịch thành công!']);
         } catch (PDOException $e) {
@@ -205,9 +224,15 @@ switch ($action) {
         $name = $postData['name'] ?? '';
         $type = $postData['type'] ?? 'Flash Sale';
         $discountValue = isset($postData['discount']) ? (float)$postData['discount'] : 0;
+<<<<<<< HEAD
         $startDate = !empty($postData['start']) ? $postData['start'] : null;
         $endDate = !empty($postData['end']) ? $postData['end'] : null;
         $status = ($endDate !== null && $endDate < date('Y-m-d')) ? 'Expired' : 'Active';
+=======
+        $status = $postData['status'] ?? 'Active';
+        $startDate = !empty($postData['start']) ? $postData['start'] : null;
+        $endDate = !empty($postData['end']) ? $postData['end'] : null;
+>>>>>>> DaiVan
 
         if (!$id || empty($name) || empty($discountValue)) {
             echo json_encode(['status' => 'error', 'message' => 'Thiếu thông tin bắt buộc (ID, Tên hoặc Mức giảm)!']);
@@ -220,6 +245,7 @@ switch ($action) {
                     WHERE id=? AND deleted_at IS NULL";
             $stmt = $pdo->prepare($sql);
             $stmt->execute([$name, $type, $discountValue, $status, $startDate, $endDate, $id]);
+<<<<<<< HEAD
 
             $usageStmt = $pdo->prepare("SELECT usage_limit FROM sale WHERE id = ? LIMIT 1");
             $usageStmt->execute([(int)$id]);
@@ -239,6 +265,8 @@ switch ($action) {
             } else {
                 disablePromotionFromSale($pdo, (int)$id);
             }
+=======
+>>>>>>> DaiVan
             
             echo json_encode(['status' => 'success', 'message' => 'Cập nhật thành công!']);
         } catch (PDOException $e) {
@@ -254,7 +282,10 @@ switch ($action) {
                 // Thực hiện XÓA MỀM
                 $stmt = $pdo->prepare("UPDATE sale SET deleted_at = CURRENT_TIMESTAMP() WHERE id = ?");
                 $stmt->execute([$id]);
+<<<<<<< HEAD
                 disablePromotionFromSale($pdo, (int)$id);
+=======
+>>>>>>> DaiVan
                 
                 echo json_encode(['status' => 'success', 'message' => 'Đã đưa chiến dịch vào thùng rác!']);
             } catch (PDOException $e) {

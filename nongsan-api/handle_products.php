@@ -2,7 +2,11 @@
 // Cho phép CORS để React có thể gọi API
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
+<<<<<<< HEAD
 header("Access-Control-Allow-Headers: Content-Type, Authorization, authorization, X-Access-Token");
+=======
+header("Access-Control-Allow-Headers: Content-Type");
+>>>>>>> DaiVan
 header('Content-Type: application/json; charset=utf-8');
 
 // Xử lý preflight request

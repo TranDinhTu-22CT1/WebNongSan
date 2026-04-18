@@ -2,7 +2,10 @@
 include_once './config/database.php';
 include_once './utils/jwt_helper.php';
 require_once './helpers/audit_log.php';
+<<<<<<< HEAD
 require_once './helpers/rate_limit.php';
+=======
+>>>>>>> DaiVan
 
 header('Content-Type: application/json');
 $data = json_decode(file_get_contents("php://input"));
@@ -15,6 +18,7 @@ if (!isset($data->email) || !isset($data->password)) {
     exit;
 }
 
+<<<<<<< HEAD
 $emailForLimit = isset($data->email) ? strtolower(trim((string)$data->email)) : '';
 $limitKey = ($_SERVER['REMOTE_ADDR'] ?? 'unknown_ip') . '|' . $emailForLimit;
 try {
@@ -27,6 +31,8 @@ try {
     exit;
 }
 
+=======
+>>>>>>> DaiVan
 try {
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = :email LIMIT 1");
     $stmt->execute([':email' => trim($data->email)]);
@@ -40,6 +46,7 @@ try {
         exit;
     }
 
+<<<<<<< HEAD
     $role = strtolower(trim((string)$user['role']));
 
     // Cho phép các vai trò người dùng đăng nhập vào hệ thống.
@@ -48,6 +55,15 @@ try {
         echo json_encode([
             "status" => "error",
             "message" => "Tài khoản không có quyền đăng nhập."
+=======
+    $role = $user['role'];
+
+    // CHỈ CHO PHÉP ADMIN & VENDOR
+    if (!in_array($role, ['admin', 'vendor'])) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Tài khoản không có quyền truy cập quản trị."
+>>>>>>> DaiVan
         ]);
         exit;
     }
@@ -74,7 +90,10 @@ try {
 
     $token = JWT_Helper::create($token_payload);
     unset($user['password']);
+<<<<<<< HEAD
     $user['role'] = $role;
+=======
+>>>>>>> DaiVan
 
     // 📝 GHI AUDIT LOG ĐĂNG NHẬP
     write_audit_log(

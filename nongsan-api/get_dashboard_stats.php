@@ -4,6 +4,7 @@ include_once './utils/jwt_helper.php';
 
 header('Content-Type: application/json');
 
+<<<<<<< HEAD
 $headers = function_exists('getallheaders') ? getallheaders() : [];
 $authHeader = '';
 
@@ -23,6 +24,11 @@ if ($authHeader === '' && isset($_SERVER['REDIRECT_HTTP_AUTHORIZATION'])) {
 }
 
 $token = trim((string)preg_replace('/^Bearer\s+/i', '', $authHeader));
+=======
+$headers = getallheaders();
+$authHeader = $headers['Authorization'] ?? '';
+$token = str_replace('Bearer ', '', $authHeader);
+>>>>>>> DaiVan
 $user = JWT_Helper::validate($token);
 
 if (!$user) {

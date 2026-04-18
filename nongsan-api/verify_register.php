@@ -3,6 +3,7 @@ include_once './config/database.php';
 include_once './utils/jwt_helper.php';
 require_once './helpers/audit_log.php';
 
+<<<<<<< HEAD
 header('Content-Type: application/json; charset=utf-8');
 
 function respond_json(int $statusCode, array $payload, bool $terminate = true): void {
@@ -13,6 +14,8 @@ function respond_json(int $statusCode, array $payload, bool $terminate = true): 
     }
 }
 
+=======
+>>>>>>> DaiVan
 $data = json_decode(file_get_contents("php://input"));
 
 if (isset($data->token) && isset($data->otp_input)) {
@@ -21,10 +24,18 @@ if (isset($data->token) && isset($data->otp_input)) {
     $payload = JWT_Helper::validate($data->token);
 
     if (!$payload) {
+<<<<<<< HEAD
         respond_json(401, [
             "status" => "error",
             "message" => "Phiên đăng ký hết hạn, vui lòng thử lại."
         ]);
+=======
+        echo json_encode([
+            "status" => "error",
+            "message" => "Phiên đăng ký hết hạn, vui lòng thử lại."
+        ]);
+        exit();
+>>>>>>> DaiVan
     }
 
     // 2. So sánh OTP (ép kiểu chuỗi)
@@ -32,22 +43,39 @@ if (isset($data->token) && isset($data->otp_input)) {
     $otpFromUser = trim((string)$data->otp_input);
 
     if ($otpInToken === '' || $otpInToken !== $otpFromUser) {
+<<<<<<< HEAD
         respond_json(401, [
             "status" => "error",
             "message" => "Mã xác nhận không chính xác!"
         ]);
+=======
+        echo json_encode([
+            "status" => "error",
+            "message" => "Mã xác nhận không chính xác!"
+        ]);
+        exit();
+>>>>>>> DaiVan
     }
 
     // 3. Kiểm tra hết hạn
     if (isset($payload->exp) && time() > $payload->exp) {
+<<<<<<< HEAD
         respond_json(410, [
             "status" => "error",
             "message" => "Mã OTP đã hết hạn."
         ]);
+=======
+        echo json_encode([
+            "status" => "error",
+            "message" => "Mã OTP đã hết hạn."
+        ]);
+        exit();
+>>>>>>> DaiVan
     }
 
     // 4. Lưu user vào DB
     try {
+<<<<<<< HEAD
         $name = trim((string)($payload->name ?? ''));
         $email = strtolower(trim((string)($payload->email ?? '')));
         $passwordHash = (string)($payload->password_hash ?? '');
@@ -82,21 +110,34 @@ if (isset($data->token) && isset($data->otp_input)) {
         $query = "
             INSERT INTO users (name, email, password, role, is_online, is_approved)
             VALUES (:name, :email, :pass, :role, 0, :is_approved)
+=======
+        $query = "
+            INSERT INTO users (name, email, password, role, is_online, is_approved)
+            VALUES (:name, :email, :pass, :role, 1, 0)
+>>>>>>> DaiVan
         ";
 
         $stmt = $conn->prepare($query);
         $stmt->execute([
+<<<<<<< HEAD
             ':name'  => $name,
             ':email' => $email,
             ':pass'  => $passwordHash,
             ':role'  => $role,
             ':is_approved' => $isApproved,
+=======
+            ':name'  => $payload->name,
+            ':email' => $payload->email,
+            ':pass'  => $payload->password_hash,
+            ':role'  => $payload->role
+>>>>>>> DaiVan
         ]);
 
         $newUserId = $conn->lastInsertId();
 
         // 📝 AUDIT LOG – ĐĂNG KÝ THÀNH CÔNG
         write_audit_log(
+<<<<<<< HEAD
             strtoupper($role) . " {$payload->name} (id {$newUserId}) đã đăng ký tài khoản"
         );
 
@@ -124,5 +165,27 @@ if (isset($data->token) && isset($data->otp_input)) {
         "status" => "error",
         "message" => "Dữ liệu không đầy đủ."
     ], false);
+=======
+            "VENDOR {$payload->name} (id {$newUserId}) đã đăng ký tài khoản"
+        );
+
+        echo json_encode([
+            "status" => "success",
+            "message" => "Đăng ký thành công!"
+        ]);
+
+    } catch (Exception $e) {
+        echo json_encode([
+            "status" => "error",
+            "message" => "Lỗi hệ thống: " . $e->getMessage()
+        ]);
+    }
+
+} else {
+    echo json_encode([
+        "status" => "error",
+        "message" => "Dữ liệu không đầy đủ."
+    ]);
+>>>>>>> DaiVan
 }
 ?>

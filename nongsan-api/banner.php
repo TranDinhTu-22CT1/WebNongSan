@@ -30,6 +30,7 @@ if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true);
 }
 
+<<<<<<< HEAD
 function removeLocalFileIfExists($path) {
     $path = trim((string)$path);
     if ($path === '') {
@@ -140,6 +141,8 @@ function buildPromoStoredNote($note, $title, $subtitle) {
     ], JSON_UNESCAPED_UNICODE);
 }
 
+=======
+>>>>>>> DaiVan
 $action = $_GET['action'] ?? 'list';
 
 try {
@@ -153,6 +156,7 @@ try {
             $system = $stmtSys->fetchAll(PDO::FETCH_ASSOC);
 
             // Lấy banner quảng bá
+<<<<<<< HEAD
             $stmtPromo = $conn->query("SELECT * FROM promo_banners ORDER BY position ASC, id ASC");
             $promo = $stmtPromo->fetchAll(PDO::FETCH_ASSOC);
             $promo = array_map(function($item) {
@@ -162,6 +166,10 @@ try {
                 $item['subtitle'] = $meta['subtitle'];
                 return $item;
             }, $promo);
+=======
+            $stmtPromo = $conn->query("SELECT * FROM promo_banners ORDER BY position ASC");
+            $promo = $stmtPromo->fetchAll(PDO::FETCH_ASSOC);
+>>>>>>> DaiVan
 
             echo json_encode([
                 "status" => "success",
@@ -214,6 +222,7 @@ try {
             break;
 
         // ==========================================
+<<<<<<< HEAD
         // TẠO MỚI BANNER QUẢNG BÁ
         // ==========================================
         case 'create_promo':
@@ -324,6 +333,53 @@ try {
             reindexPromoPositions($conn);
 
             echo json_encode(["status" => "success", "message" => "Da xoa banner quang ba."]);
+=======
+        // CẬP NHẬT BANNER QUẢNG BÁ (1-7)
+        // ==========================================
+        case 'update_promo':
+            $position = (int)($_POST['position'] ?? 0);
+            $note = $_POST['note'] ?? '';
+            
+            if ($position < 1 || $position > 7) {
+                throw new Exception("Vị trí banner không hợp lệ.");
+            }
+
+            // 1. Tìm thông tin ảnh cũ
+            $stmt = $conn->prepare("SELECT image_path FROM promo_banners WHERE position = :pos");
+            $stmt->execute([':pos' => $position]);
+            $oldData = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            $targetPath = $oldData['image_path'] ?? '';
+
+            // 2. Nếu có tệp mới được tải lên
+            if (isset($_FILES['image'])) {
+                $file = $_FILES['image'];
+                $ext = pathinfo($file['name'], PATHINFO_EXTENSION);
+                $newFileName = "promo_pos" . $position . "_" . time() . "." . $ext;
+                $newPath = $uploadDir . $newFileName;
+
+                if (move_uploaded_file($file['tmp_name'], $newPath)) {
+                    // Xóa tệp cũ
+                    if (!empty($targetPath) && file_exists($targetPath) && !strpos($targetPath, 'unsplash.com')) {
+                        unlink($targetPath);
+                    }
+                    $targetPath = $newPath;
+                }
+            }
+
+            // 3. Cập nhật Database
+            $sql = "INSERT INTO promo_banners (position, image_path, note) 
+                    VALUES (:pos, :path, :note) 
+                    ON DUPLICATE KEY UPDATE image_path = :path, note = :note";
+            $stmtUpdate = $conn->prepare($sql);
+            $stmtUpdate->execute([
+                ':pos' => $position, 
+                ':path' => $targetPath,
+                ':note' => $note
+            ]);
+
+            echo json_encode(["status" => "success", "message" => "Đã cập nhật banner quảng bá!", "path" => $targetPath]);
+>>>>>>> DaiVan
             break;
 
         default:
