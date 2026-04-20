@@ -1,0 +1,10 @@
+[16:36:21 11/4/2026] USER: hello
+[16:36:21 11/4/2026] BOT: Chào bạn, rất vui được phục vụ bạn tại AgriMarket!
+
+Hiện tại AgriMarket đang có một số chương trình khuyến mãi hấp dẫn dành cho bạn đây:
+*   Mã **12**: Giảm giá 12.00đ cho đơn hàng của bạn.
+*   Mã **123**: Giảm giá 123.00đ hoặc 10.00đ (tùy mã bạn nhập) cho các sản phẩm Flash Sale.
+*   Mã **tutran**: Nhận quà tặng đặc biệt khi mua sắm tại AgriMarket!
+
+Bạn đang tìm kiếm sản phẩm gì hay có câu hỏi nào không ạ? AgriMarket luôn sẵn lòng tư vấn cho bạn!
+--------------------------------------------------
